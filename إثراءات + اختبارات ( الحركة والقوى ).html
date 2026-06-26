@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>إثراءات واختبارات الحركة والقوى</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#eef6ff;color:#18324a}
+header{background:linear-gradient(135deg,#0b6efd,#18a6d9);color:white;text-align:center;padding:34px 16px;border-bottom-left-radius:32px;border-bottom-right-radius:32px}
+h1{margin:0 0 10px;font-size:30px} header p{margin:0;font-size:17px;line-height:1.8}
+main{max-width:1050px;margin:22px auto;padding:0 14px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:15px}
+.card,.panel{background:white;border-radius:18px;padding:20px;box-shadow:0 8px 24px rgba(20,70,120,.12);border:1px solid #dbeeff}
+.card{cursor:pointer;text-align:center;transition:.2s}.card:hover{transform:translateY(-3px)}
+.card b{display:block;color:#0b6efd;font-size:24px;margin-bottom:10px}
+.panel{display:none;margin-bottom:18px}.panel.active{display:block}
+.topbtn,.btn{border:0;border-radius:13px;background:#0b6efd;color:white;text-decoration:none;padding:12px 18px;display:inline-block;font-weight:bold;cursor:pointer;margin:5px}
+.topbtn{background:#18324a}
+.enrich{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:12px;margin:14px 0}
+.en{background:#f8fbff;border:1px solid #d9ebff;border-radius:16px;padding:15px;line-height:1.7}
+.en h3{margin:0 0 8px;color:#174b8a}.en p{margin:0 0 12px;color:#52677c}
+.question{border-top:1px solid #e4eef9;padding:16px 0}
+.choice{display:block;background:#f6faff;border:1px solid #dbeaff;border-radius:12px;margin:8px 0;padding:12px;cursor:pointer}
+.choice input{margin-left:8px}
+.result{background:#f3fff6;border:1px solid #bde8c7;border-radius:16px;padding:16px;margin-top:14px;font-size:18px;line-height:1.8}
+.hidden{display:none}
+footer{text-align:center;padding:28px;color:#49647d;line-height:1.9}
+.badge{display:inline-block;background:#eaf4ff;color:#0b6efd;border-radius:999px;padding:6px 12px;margin:4px;font-weight:bold}
+</style>
+</head>
+<body>
+<header>
+<h1>إثراءات واختبارات الحركة والقوى</h1>
+<p>نواتج التعلم 16 و17 و18<br>إعداد المعلمة: دلال محمد عسيري</p>
+</header>
+
+<main>
+<section id="home">
+<div class="cards">
+<div class="card" onclick="showOutcome('o16')"><b>ناتج التعلم 16</b>إثراءات من دروس عين + اختبار تفاعلي</div>
+<div class="card" onclick="showOutcome('o17')"><b>ناتج التعلم 17</b>إثراءات من دروس عين + اختبار تفاعلي</div>
+<div class="card" onclick="showOutcome('o18')"><b>ناتج التعلم 18</b>إثراءات الحركة والقوى + المغناطيسية</div>
+</div>
+</section>
+
+<section id="o16" class="panel">
+<button class="topbtn" onclick="goHome()">العودة للرئيسية</button>
+<h2>🎯 ناتج التعلم 16</h2>
+<span class="badge">القوى والحركة</span><span class="badge">تغيير الحركة</span>
+<h2>🎥 إثراءات من دروس عين</h2>
+<div class="enrich">
+<div class="en"><h3>📘 القوى والحركة – تغيير الحركة</h3><p>رابع ابتدائي: مراجعة تأسيسية لكيف تغيّر القوة حركة الجسم.</p><a class="btn" target="_blank" href="https://www.youtube.com/results?search_query=دروس+عين+القوى+والحركة+تغيير+الحركة+رابع+ابتدائي">مشاهدة الدرس</a></div>
+<div class="en"><h3>📗 الحركة – القوى والحركة</h3><p>سادس ابتدائي: ربط القوة بالحركة والسرعة والاحتكاك.</p><a class="btn" target="_blank" href="https://www.youtube.com/results?search_query=دروس+عين+الحركة+القوى+والحركة+سادس+ابتدائي">مشاهدة الدرس</a></div>
+</div>
+<div id="quiz16"></div>
+</section>
+
+<section id="o17" class="panel">
+<button class="topbtn" onclick="goHome()">العودة للرئيسية</button>
+<h2>🎯 ناتج التعلم 17</h2>
+<span class="badge">القوى المتزنة</span><span class="badge">القوى غير المتزنة</span>
+<h2>🎥 إثراءات من دروس عين</h2>
+<div class="enrich">
+<div class="en"><h3>📘 القوى والحركة – تغيير الحركة</h3><p>رابع ابتدائي: مراجعة أثر القوة في تغيير الحركة.</p><a class="btn" target="_blank" href="https://www.youtube.com/results?search_query=دروس+عين+القوى+والحركة+تغيير+الحركة+رابع+ابتدائي">مشاهدة الدرس</a></div>
+<div class="en"><h3>📗 الحركة – القوى والحركة</h3><p>سادس ابتدائي: مراجعة القوى المؤثرة في الأجسام.</p><a class="btn" target="_blank" href="https://www.youtube.com/results?search_query=دروس+عين+الحركة+القوى+والحركة+سادس+ابتدائي">مشاهدة الدرس</a></div>
+</div>
+<div id="quiz17"></div>
+</section>
+
+<section id="o18" class="panel">
+<button class="topbtn" onclick="goHome()">العودة للرئيسية</button>
+<h2>🎯 ناتج التعلم 18</h2>
+<span class="badge">الحركة والقوى</span><span class="badge">المغناطيسية</span>
+<h2>🎥 إثراءات من دروس عين</h2>
+<div class="enrich">
+<div class="en"><h3>📘 القوى والحركة – تغيير الحركة</h3><p>رابع ابتدائي: أساسيات القوة وتغيير الحركة.</p><a class="btn" target="_blank" href="https://www.youtube.com/results?search_query=دروس+عين+القوى+والحركة+تغيير+الحركة+رابع+ابتدائي">مشاهدة الدرس</a></div>
+<div class="en"><h3>📗 الحركة – القوى والحركة</h3><p>سادس ابتدائي: مفاهيم الحركة والقوى.</p><a class="btn" target="_blank" href="https://www.youtube.com/results?search_query=دروس+عين+الحركة+القوى+والحركة+سادس+ابتدائي">مشاهدة الدرس</a></div>
+<div class="en"><h3>🧲 المغناطيسية</h3><p>رابع ابتدائي: الجذب والتنافر والمغناطيس.</p><a class="btn" target="_blank" href="https://www.youtube.com/results?search_query=دروس+عين+المغناطيسية+رابع+ابتدائي">مشاهدة الدرس</a></div>
+<div class="en"><h3>🧲 المغناطيسية</h3><p>سادس ابتدائي: تطبيقات المغناطيسية.</p><a class="btn" target="_blank" href="https://www.youtube.com/results?search_query=دروس+عين+المغناطيسية+سادس+ابتدائي">مشاهدة الدرس</a></div>
+</div>
+<div id="quiz18"></div>
+</section>
+</main>
+
+<footer>
+الإدارة العامة للتعليم بمنطقة جازان<br>
+إعداد المعلمة: دلال محمد عسيري
+</footer>
+
+<script>
+const quizzes={
+16:[
+["أي عبارة تصف القوة وصفًا صحيحًا؟",["دفع أو سحب يؤثر في الجسم","لون الجسم","حجم الجسم فقط","درجة حرارة الجسم"],0],
+["عند تأثير قوة غير متزنة في جسم ساكن فإن الجسم غالبًا:",["يبقى ساكنًا دائمًا","تتغير حركته","تختفي كتلته","تنعدم الجاذبية"],1],
+["إذا زادت القوة المؤثرة في جسم مع ثبات كتلته فإن تسارعه:",["يزداد","ينقص دائمًا","لا يتغير أبدًا","يصبح صفرًا"],0],
+["أي مثال يدل على تغيير الحركة؟",["كتاب ثابت","كرة تتوقف بسبب الاحتكاك","مصباح مطفأ","ماء في كأس ثابت"],1],
+["القوى المتزنة تجعل الجسم:",["يغير سرعته بسرعة كبيرة","يحافظ على حالته الحركية","يتحرك عشوائيًا","يفقد كتلته"],1]
+],
+17:[
+["إذا كانت القوة في اتجاه الحركة فإن السرعة غالبًا:",["تزداد","تنعدم مباشرة","تتغير إلى لون آخر","لا تتغير أبدًا"],0],
+["إذا أثرت قوتان متساويتان ومتعاكستان في جسم فإن محصلة القوى:",["كبيرة جدًا","صفر","إلى اليمين دائمًا","إلى الأعلى دائمًا"],1],
+["الاحتكاك قوة تؤثر غالبًا:",["في اتجاه الحركة دائمًا","عكس اتجاه الحركة","لا علاقة لها بالحركة","فقط في الفضاء"],1],
+["تقاس القوة بوحدة:",["النيوتن","المتر","الثانية","الكيلومتر"],0],
+["محصلة القوى غير الصفرية تسبب:",["تغيرًا في الحركة","ثباتًا تامًا دائمًا","اختفاء الجسم","تحول المادة إلى ضوء"],0]
+],
+18:[
+["المغناطيس يؤثر بقوة في الأجسام المصنوعة غالبًا من:",["الحديد","الخشب","الورق","الزجاج"],0],
+["القوة المغناطيسية يمكن أن تؤثر دون تلامس مباشر.",["صح","خطأ"],0],
+["عند تقريب قطبين مغناطيسيين متشابهين فإنهما:",["يتنافران","يتجاذبان دائمًا","ينصهران","يفقدان الكتلة"],0],
+["القطبان المختلفان في المغناطيس:",["يتجاذبان","يتنافران دائمًا","لا يؤثران","يتحولان إلى خشب"],0],
+["تساعد دراسة المغناطيسية في فهم:",["البوصلة والمحركات","تلوين الورق","قياس الطول فقط","الكتابة بالقلم"],0]
+]};
+function showOutcome(id){document.getElementById('home').style.display='none';document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function goHome(){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById('home').style.display='block';window.scrollTo(0,0);}
+function buildQuiz(num){
+let box=document.getElementById('quiz'+num);
+box.innerHTML=`<h2>📝 الاختبار التفاعلي</h2><button class="btn" onclick="startQuiz(${num})">ابدئي الاختبار</button><div id="qbox${num}" class="hidden"></div><div id="res${num}" class="hidden result"></div>`;
+}
+function startQuiz(num){
+let qbox=document.getElementById('qbox'+num), res=document.getElementById('res'+num);
+qbox.classList.remove('hidden');res.classList.add('hidden');
+qbox.innerHTML=quizzes[num].map((q,i)=>`<div class="question"><h3>${i+1}. ${q[0]}</h3>${q[1].map((c,j)=>`<label class="choice"><input type="radio" name="q${num}_${i}" value="${j}"> ${c}</label>`).join('')}</div>`).join('')+`<button class="btn" onclick="finish(${num})">إظهار النتيجة</button>`;
+}
+function finish(num){
+let score=0,total=quizzes[num].length;
+quizzes[num].forEach((q,i)=>{let c=document.querySelector(`input[name="q${num}_${i}"]:checked`);if(c&&Number(c.value)===q[2])score++;});
+let pct=Math.round(score/total*100);
+let msg=pct>=90?"ممتازة جدًا 🌟 واصلي التألق.":pct>=70?"جيد جدًا 💙 راجعي الإثراءات ثم أعيدي المحاولة.":"تحتاجين مراجعة الإثراءات أولًا ثم إعادة الاختبار.";
+let res=document.getElementById('res'+num);
+res.innerHTML=`درجتك: <b>${score} من ${total}</b><br>النسبة: <b>${pct}%</b><br>${msg}<br><br><button class="btn" onclick="startQuiz(${num})">إعادة الاختبار</button>`;
+res.classList.remove('hidden');res.scrollIntoView({behavior:'smooth'});
+}
+buildQuiz(16);buildQuiz(17);buildQuiz(18);
+</script>
+</body>
+</html>

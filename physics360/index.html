@@ -81,6 +81,17 @@ footer{margin-top:30px;text-align:center;color:#789;font-size:13px}
 .clickable-name:hover{text-decoration:underline}
 @media(max-width:600px){.stamp-grid{grid-template-columns:1fr}}
 
+
+/* تحسين عرض الطالبات على الجوال */
+@media(max-width:850px){
+  #students .student-row:not(.head){display:block;background:#fff;border:1px solid #dbe7ee;border-radius:18px;padding:14px;margin:10px 0;box-shadow:0 5px 14px rgba(12,55,90,.05)}
+  #students .student-row:not(.head)>div:first-child strong{display:block;font-size:17px;line-height:1.7;color:var(--navy);margin-bottom:7px}
+  #students .student-row:not(.head) .stamp{display:none}
+  #students .student-row:not(.head) .points,#students .student-row:not(.head) .lvl{display:inline-block;margin:8px 4px 0;padding:7px 10px;background:#f2f7fa;border-radius:10px;font-weight:700}
+  #students .student-row:not(.head) .points:before{content:"النقاط: "}
+  #students .student-row:not(.head) .lvl:before{content:"المستوى: "}
+}
+
 </style>
 </head>
 <body>
@@ -243,11 +254,11 @@ footer{margin-top:30px;text-align:center;color:#789;font-size:13px}
       <h2>متابعة الطالبات التفاعلية</h2>
       <p class="notice">اختاري الشعبة، ثم افتحي بطاقة الطالبة لمنح الأختام ومتابعة النقاط والمستوى. البيانات محفوظة على نفس الجهاز.</p>
       <div class="controls no-print" style="margin:14px 0">
-        <label style="font-weight:800">الشعبة:</label>
+        <label style="font-weight:800">اختاري الشعبة:</label>
         <select id="sectionSelect" onchange="changeSection(this.value)">
-          <option value="1">الشعبة 1</option>
-          <option value="2">الشعبة 2</option>
-          <option value="3">الشعبة 3</option>
+          <option value="1">الشعبة الأولى</option>
+          <option value="2">الشعبة الثانية</option>
+          <option value="3">الشعبة الثالثة</option>
         </select>
         <button class="action" onclick="saveStudents()">حفظ البيانات</button>
       </div>
@@ -340,7 +351,7 @@ footer{margin-top:30px;text-align:center;color:#789;font-size:13px}
       <button class="close" onclick="closeStudent()">×</button>
     </div>
     <div class="passport">
-      <div class="small" style="color:#d8f4ff">جواز فيزياء 360° الإلكتروني</div>
+      <div class="small" style="color:#d8f4ff">جواز فيزياء 360° الإلكتروني — <span id="passportSection"></span></div>
       <h2 id="passportName" style="margin:6px 0;color:white">الطالبة</h2>
       <div>النقاط: <strong id="passportPoints">0</strong> — المستوى: <strong id="passportLevel">مستكشفة الفيزياء</strong></div>
     </div>
@@ -453,6 +464,7 @@ function openStudent(id){
   const d=allStudentRecords()[id], pts=(d.a+d.b+d.c+d.d)*5;
   document.getElementById('modalName').textContent='بطاقة '+d.name;
   document.getElementById('passportName').textContent=d.name;
+  document.getElementById('passportSection').textContent='الشعبة '+d.section;
   document.getElementById('passportPoints').textContent=pts;
   document.getElementById('passportLevel').textContent=level(pts);
   renderHistory();

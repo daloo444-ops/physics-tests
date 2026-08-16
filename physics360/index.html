@@ -237,16 +237,22 @@ footer{margin-top:30px;text-align:center;color:#789;font-size:13px}
     </div>
   </section>
 
-  <section class="page" data-title="متابعة 72 طالبة">
+  
+  <section class="page" data-title="متابعة الطالبات">
     <div class="card">
       <h2>متابعة الطالبات التفاعلية</h2>
-      <p class="notice">اكتبي أسماء الطالبات، ثم أدخلي عدد أختام كل محطة. النقاط والمستوى تُحسب تلقائيًا، وتُحفظ البيانات على نفس الجهاز.</p>
+      <p class="notice">اختاري الشعبة، ثم افتحي بطاقة الطالبة لمنح الأختام ومتابعة النقاط والمستوى. البيانات محفوظة على نفس الجهاز.</p>
       <div class="controls no-print" style="margin:14px 0">
+        <label style="font-weight:800">الشعبة:</label>
+        <select id="sectionSelect" onchange="changeSection(this.value)">
+          <option value="1">الشعبة 1</option>
+          <option value="2">الشعبة 2</option>
+          <option value="3">الشعبة 3</option>
+        </select>
         <button class="action" onclick="saveStudents()">حفظ البيانات</button>
-        <button class="action secondary" onclick="resetStudents()">مسح البيانات</button>
       </div>
       <div class="grid">
-        <div class="metric span-4"><div class="n" id="totalStudents">72</div><div>عدد الطالبات</div></div>
+        <div class="metric span-4"><div class="n" id="totalStudents">0</div><div>طالبات الشعبة</div></div>
         <div class="metric span-4"><div class="n" id="topCount">0</div><div>خبيرات 360°</div></div>
         <div class="metric span-4"><div class="n" id="avgPoints">0</div><div>متوسط النقاط</div></div>
       </div>
@@ -377,87 +383,101 @@ function level(points){
   if(points>=50)return 'متمكنة';
   return 'مستكشفة الفيزياء';
 }
+
+const STUDENTS_BY_SECTION = {"1": ["ارجوان بنت حسن بن علي بن محمد حمدي", "ارجوان خالد محمد نجمي", "العنود عبدالله محمد خميسي", "الهنوف عبداللة محمد خميسي", "الين هاني محمد فقيهي", "اماني قيمان على حمدي", "أميره بنت عبدالله بن محمد بن يحي عكور حمدي", "بسمه حسن محمد نجمي", "بشرى بنت عبده بن يحي بن علي عكور", "بيادر حسن عبده نجمي", "تالا ماجد بن أحمد نجمي", "جمانه حسن أحمد نجمي", "جنى بنت عبدالله بن محمد عزالدين حمدي", "جنى بنت محمد بن منصور بن محمد صميلي", "جوان محمد عبداللة نجمي", "جود احمد يحيى حملي", "جود سلمان احمد حمدي", "جوري بنت محمد بن ابراهيم بن محمد عكور حمدي", "حليمه محمد حسن حكمي", "خديج بنت محمد بن حسين بن أحمد جابري حمدي", "ديمه توفيق محمد نجمي", "دينا بنت عبدالعزيز بن محمد بن  محمد عكور", "ربى بنت سريع بن علي بن محمد مشهور حمدي", "رحمه بنت فهد بن يحي بن عبده مشهور حمدي", "وداد محمد حسن حكمي"], "2": ["رسيل أسامه ابراهيم نجمي", "رسيل بنت علي بن احمد بن عبدالله عكور", "رغد بنت عبدالله بن محمد بن سهل مشهور حمدي", "رفال بنت عبده بن محمد بن عبدالله جماح حمدي", "رهف حمود محمد آل خيرات", "رواسن بنت عبدالله بن علي بن محمد عز الدين حمدي", "روان بنت علي بن عبده بن محمد مشهور حمدي", "ريتاج بنت يحيى بن احمد عكور", "ريلاس بنت محمد بن حسن بن محمد عكور حمدي", "ريماس بنت محمد بن علي بن احمد خزاعي حمدي", "زهراء صالح محسن هادي", "سجى محمد احمد حمدي", "سديم ابراهيم عبدالله محمد عكور", "سديم بنت سبتان بن عبده بن عبده حمدي", "سما بنت محمد بن علي بن محمد عكور", "شادن سليمان احمد قعيش", "ضحى بنت عبدالعزيز بن علي نجمي", "عائشه بنت محمد بن أبكر بن يحي قارضه", "عائشه سامي حمود آل خيرات", "غدير بنت عبده بن علي بن محمد مشهور حمدي"], "3": ["زينب رشيد مرشد عذاب", "غلا بنت عبدالعزيز بن حسين نجمي", "فاطمة علي عبدالله عكور", "فيء بنت عبدالله بن محمد بن حسين عكور", "لميس مروعي علي مرشد", "ليان بنت عبدالله بن حسين عكور", "ليان عبدالهادي عبدالله القاضي", "مدى احمد محمد نجمي", "مريم بنت علي بن علي بن جبران قيسي", "مريم بنت محمد بن محمد بن ابراهيم مشهور", "مريم حافظ محمد نجمي", "منى رشيد مرشد عذاب", "مها بنت مبارك بن علي مبروك", "مياسم بنت يحيى بن عبده بن يحي عكور حمدي", "ميس بنت عبد الكريم بن محمد بن يحيى صميلي", "نجود عبدالله عمر مهيوب", "نجوى عبدالله احمد خال", "نور محمد بن يحيى نجمي", "نوره يحيى بن محمد حمدي", "هيام بنت عبدالله بن محمد نجمي", "وتين تركي عبدالله حمدي", "وسن بنت علي بن حسن بن محمد عكور", "وصال سطام بن محمد نجمي", "وفاء هادي محمد هادي خوري", "ولاء بنت يحي بن محمد بن محمد عكور", "ولاء يحي احمد نجمي"]};
+const STORAGE_KEY='physics360_students_v2';
+const HISTORY_KEY='physics360_histories_v2';
 const studentsEl=document.getElementById('students');
+let currentSection='1';
+let currentStudentId=null;
+
+function allStudentRecords(){
+  const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');
+  for(const sec of Object.keys(STUDENTS_BY_SECTION)){
+    STUDENTS_BY_SECTION[sec].forEach((name,idx)=>{
+      const id=sec+'-'+idx;
+      if(!saved[id]) saved[id]={name,section:sec,a:0,b:0,c:0,d:0};
+      saved[id].name=name;
+      saved[id].section=sec;
+    });
+  }
+  return saved;
+}
+function persist(records){localStorage.setItem(STORAGE_KEY,JSON.stringify(records));}
+function changeSection(sec){currentSection=String(sec);buildStudents();}
 function buildStudents(){
+  const records=allStudentRecords();
   studentsEl.innerHTML='';
   const head=document.createElement('div');
   head.className='student-row head';
   head.innerHTML='<div>اسم الطالبة</div><div>أتقنتها</div><div>اكتشفتها</div><div>طبقتها</div><div>ابتكرتها</div><div>النقاط</div><div>المستوى</div>';
   studentsEl.appendChild(head);
-  const saved=JSON.parse(localStorage.getItem('physics360_students')||'[]');
-  for(let i=0;i<72;i++){
-    const d=saved[i]||{};
-    const row=document.createElement('div'); row.className='student-row'; row.dataset.index=i;
+  STUDENTS_BY_SECTION[currentSection].forEach((name,idx)=>{
+    const id=currentSection+'-'+idx, d=records[id];
+    const row=document.createElement('div');
+    row.className='student-row'; row.dataset.id=id;
     row.innerHTML=`
-      <div><input class="sname" style="width:100%" placeholder="الطالبة ${i+1}" value="${d.name||''}" onblur="saveStudentsSilent()"><button class="action secondary" style="width:100%;margin-top:5px;padding:6px" onclick="openStudent(${i})">فتح البطاقة 👤</button></div>
-      <input class="stamp" type="number" min="0" value="${d.a||0}">
-      <input class="stamp" type="number" min="0" value="${d.b||0}">
-      <input class="stamp" type="number" min="0" value="${d.c||0}">
-      <input class="stamp" type="number" min="0" value="${d.d||0}">
+      <div><strong>${name}</strong><button class="action secondary" style="width:100%;margin-top:6px;padding:7px" onclick="openStudent('${id}')">فتح البطاقة 👤</button></div>
+      <input class="stamp" data-k="a" type="number" min="0" value="${d.a||0}">
+      <input class="stamp" data-k="b" type="number" min="0" value="${d.b||0}">
+      <input class="stamp" data-k="c" type="number" min="0" value="${d.c||0}">
+      <input class="stamp" data-k="d" type="number" min="0" value="${d.d||0}">
       <div class="points">0</div><div class="lvl">-</div>`;
-    row.querySelectorAll('.stamp').forEach(inp=>inp.addEventListener('input',recalc));
+    row.querySelectorAll('.stamp').forEach(inp=>inp.addEventListener('input',()=>updateFromRow(row)));
     studentsEl.appendChild(row);
-  }
+  });
   recalc();
 }
-function getStudentData(){
-  return [...studentsEl.querySelectorAll('.student-row:not(.head)')].map(r=>{
-    const vals=[...r.querySelectorAll('.stamp')].map(x=>Math.max(0,parseInt(x.value||0)));
-    return {name:r.querySelector('.sname').value,a:vals[0],b:vals[1],c:vals[2],d:vals[3]};
-  });
+function updateFromRow(row){
+  const records=allStudentRecords(), id=row.dataset.id;
+  row.querySelectorAll('.stamp').forEach(inp=>records[id][inp.dataset.k]=Math.max(0,parseInt(inp.value||0)));
+  persist(records); recalc();
 }
 function recalc(){
-  let total=0,top=0;
+  let total=0,top=0,count=0;
   [...studentsEl.querySelectorAll('.student-row:not(.head)')].forEach(r=>{
     const vals=[...r.querySelectorAll('.stamp')].map(x=>Math.max(0,parseInt(x.value||0)));
     const pts=vals.reduce((a,b)=>a+b,0)*5;
     r.querySelector('.points').textContent=pts;
     r.querySelector('.lvl').textContent=level(pts);
-    total+=pts;if(pts>=150)top++;
+    total+=pts; count++; if(pts>=150)top++;
   });
+  document.getElementById('totalStudents').textContent=count;
   document.getElementById('topCount').textContent=top;
-  document.getElementById('avgPoints').textContent=Math.round(total/72);
+  document.getElementById('avgPoints').textContent=count?Math.round(total/count):0;
 }
-function saveStudents(){localStorage.setItem('physics360_students',JSON.stringify(getStudentData())); alert('تم حفظ بيانات الطالبات على هذا الجهاز ✅');}
-function resetStudents(){if(confirm('هل تريدين مسح جميع بيانات الطالبات؟')){localStorage.removeItem('physics360_students');
-let currentStudent=-1;
-function saveStudentsSilent(){localStorage.setItem('physics360_students',JSON.stringify(getStudentData()));}
-function histories(){return JSON.parse(localStorage.getItem('physics360_histories')||'{}');}
-function openStudent(i){
-  saveStudentsSilent(); currentStudent=i;
-  const data=getStudentData()[i], pts=(data.a+data.b+data.c+data.d)*5;
-  const nm=data.name.trim()||('الطالبة '+(i+1));
-  document.getElementById('modalName').textContent='بطاقة '+nm;
-  document.getElementById('passportName').textContent=nm;
+function saveStudents(){persist(allStudentRecords());alert('تم حفظ بيانات الطالبات ✅');}
+function histories(){return JSON.parse(localStorage.getItem(HISTORY_KEY)||'{}');}
+function openStudent(id){
+  currentStudentId=id;
+  const d=allStudentRecords()[id], pts=(d.a+d.b+d.c+d.d)*5;
+  document.getElementById('modalName').textContent='بطاقة '+d.name;
+  document.getElementById('passportName').textContent=d.name;
   document.getElementById('passportPoints').textContent=pts;
   document.getElementById('passportLevel').textContent=level(pts);
   renderHistory();
   document.getElementById('studentModal').classList.add('open');
 }
-function closeStudent(){document.getElementById('studentModal').classList.remove('open');currentStudent=-1;}
+function closeStudent(){document.getElementById('studentModal').classList.remove('open');currentStudentId=null;}
 function grantStamp(key,label,station){
-  if(currentStudent<0)return;
-  const rows=[...studentsEl.querySelectorAll('.student-row:not(.head)')];
-  const r=rows[currentStudent];
-  const map={a:0,b:1,c:2,d:3};
-  const inputs=[...r.querySelectorAll('.stamp')];
-  inputs[map[key]].value=(parseInt(inputs[map[key]].value||0)+1);
-  recalc(); saveStudentsSilent();
-  const h=histories(), k=String(currentStudent);
-  if(!h[k])h[k]=[];
-  h[k].unshift({label,station,date:new Date().toLocaleDateString('ar-SA'),time:new Date().toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})});
-  localStorage.setItem('physics360_histories',JSON.stringify(h));
-  openStudent(currentStudent);
+  if(!currentStudentId)return;
+  const records=allStudentRecords();
+  records[currentStudentId][key]=(parseInt(records[currentStudentId][key]||0)+1);
+  persist(records);
+  const h=histories();
+  if(!h[currentStudentId])h[currentStudentId]=[];
+  h[currentStudentId].unshift({label,station,date:new Date().toLocaleDateString('ar-SA'),time:new Date().toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})});
+  localStorage.setItem(HISTORY_KEY,JSON.stringify(h));
+  buildStudents();
+  openStudent(currentStudentId);
 }
 function renderHistory(){
-  const h=histories()[String(currentStudent)]||[];
+  const h=histories()[currentStudentId]||[];
   const el=document.getElementById('studentHistory');
   if(!h.length){el.innerHTML='<div class="history-item small">لا توجد إنجازات مسجلة بعد.</div>';return;}
   el.innerHTML=h.map(x=>`<div class="history-item"><strong>${x.label}</strong> — ${x.station}<br><span class="small">${x.date} • ${x.time}</span></div>`).join('');
 }
 document.getElementById('studentModal').addEventListener('click',e=>{if(e.target.id==='studentModal')closeStudent();});
-
-buildStudents();}}
 buildStudents();
 
 const checklistItems=[

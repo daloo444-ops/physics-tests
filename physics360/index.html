@@ -92,6 +92,20 @@ footer{margin-top:30px;text-align:center;color:#789;font-size:13px}
   #students .student-row:not(.head) .lvl:before{content:"المستوى: "}
 }
 
+
+.delete-stamp-btn{
+  width:100%;
+  margin:10px 0 4px;
+  padding:12px 14px;
+  border:1px solid #e7b9b9;
+  background:#fff7f7;
+  color:#a12d2d;
+  border-radius:14px;
+  font-weight:800;
+  cursor:pointer;
+}
+.delete-stamp-btn:active{transform:scale(.99)}
+
 </style>
 </head>
 <body>
@@ -362,6 +376,7 @@ footer{margin-top:30px;text-align:center;color:#789;font-size:13px}
       <button class="stamp-btn" onclick="grantStamp('c','🟢 طبقتها','أطبقها')">🔬 أطبقها<br><span class="small">🟢 طبقتها +5</span></button>
       <button class="stamp-btn" onclick="grantStamp('d','🟠 ابتكرتها','أبتكرها')">💡 أبتكرها<br><span class="small">🟠 ابتكرتها +5</span></button>
     </div>
+    <button class="delete-stamp-btn" onclick="deleteLastStamp()">🗑️ حذف آخر ختم</button>
     <h3>سجل إنجازات الطالبة</h3>
     <div class="history" id="studentHistory"></div>
   </div>
@@ -483,6 +498,45 @@ function grantStamp(key,label,station){
   buildStudents();
   openStudent(currentStudentId);
 }
+
+function deleteLastStamp(){
+  if(!currentStudentId)return;
+
+  const h = histories();
+  const history = h[currentStudentId] || [];
+
+  if(!history.length){
+    alert('لا يوجد ختم مسجل لحذفه.');
+    return;
+  }
+
+  const last = history[0];
+  const stationToKey = {
+    'أتعلمها':'a',
+    'أراها':'b',
+    'أطبقها':'c',
+    'أبتكرها':'d'
+  };
+  const key = stationToKey[last.station];
+
+  const ok = confirm('هل تريدين حذف آخر ختم للطالبة؟\n\n' + last.label + ' — ' + last.station);
+  if(!ok)return;
+
+  const records = allStudentRecords();
+  if(key && records[currentStudentId]){
+    records[currentStudentId][key] = Math.max(0, parseInt(records[currentStudentId][key] || 0) - 1);
+    persist(records);
+  }
+
+  history.shift();
+  h[currentStudentId] = history;
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(h));
+
+  buildStudents();
+  openStudent(currentStudentId);
+  alert('تم حذف آخر ختم وخصم 5 نقاط ✅');
+}
+
 function renderHistory(){
   const h=histories()[currentStudentId]||[];
   const el=document.getElementById('studentHistory');

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>فيزياء 360° | ملف المعلمة التفاعلي</title>
+<style>
+:root{
+  --navy:#0b3b63; --blue:#1f6f9f; --teal:#1aa6a6; --light:#eef7fb;
+  --ink:#17324d; --muted:#678; --white:#fff; --gold:#d7a928;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;background:#f6f9fc;color:var(--ink)}
+header{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid #dfe8ef}
+.header-inner{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;gap:12px}
+.brand{font-weight:800;color:var(--navy);font-size:20px}
+.progress{height:7px;background:#e7edf2;border-radius:999px;overflow:hidden;flex:1;max-width:360px}
+.progress > span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--blue));transition:.25s}
+main{max-width:1100px;margin:auto;padding:24px 18px 90px}
+.hero{background:linear-gradient(135deg,var(--navy),var(--blue));color:white;border-radius:24px;padding:38px 28px;box-shadow:0 16px 36px rgba(11,59,99,.18);position:relative;overflow:hidden}
+.hero:after{content:"360°";position:absolute;left:22px;bottom:-28px;font-size:110px;font-weight:900;opacity:.08}
+.hero h1{margin:0 0 10px;font-size:40px}
+.hero p{margin:4px 0;line-height:1.8}
+.tagline{font-weight:700;color:#d7f7ff}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-top:18px}
+.card{background:white;border:1px solid #e1eaf0;border-radius:18px;padding:20px;box-shadow:0 8px 22px rgba(12,55,90,.06)}
+.card h2,.card h3{color:var(--navy);margin-top:0}
+.span-12{grid-column:span 12}.span-6{grid-column:span 6}.span-4{grid-column:span 4}
+@media(max-width:800px){.span-6,.span-4{grid-column:span 12}.hero h1{font-size:34px}}
+nav.tabs{display:flex;gap:8px;overflow:auto;padding:10px 8px;position:sticky;top:63px;background:#f6f9fc;z-index:20;border-bottom:1px solid #dbe7ee;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{white-space:nowrap;border:1px solid #cfe0ea;background:white;color:var(--navy);padding:12px 15px;border-radius:14px;font-weight:800;cursor:pointer;font-size:15px;min-height:46px}
+nav.tabs button.active{background:var(--navy);color:white;border-color:var(--navy)}
+section.page{display:none;animation:fade .25s ease}
+section.page.active{display:block}
+@keyframes fade{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:none}}
+ul{line-height:1.95;margin:0;padding-right:22px}
+table{width:100%;border-collapse:collapse;background:white;border-radius:14px;overflow:hidden}
+th,td{border-bottom:1px solid #e5edf2;padding:11px;text-align:right;vertical-align:top}
+th{background:var(--navy);color:white}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:999px;font-weight:700;margin:4px 2px}
+.b1{background:#dcebff;color:#0b4d84}.b2{background:#efe2ff;color:#6a2a95}.b3{background:#e5f7df;color:#2f6f22}.b4{background:#fff0da;color:#9b5b00}
+.station{padding:16px;border-radius:16px;border:1px solid #e2ebf1;background:#fbfdff}
+.station strong{display:block;font-size:18px;margin-bottom:8px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input,select,textarea,button.action{font:inherit;border:1px solid #cbd9e3;border-radius:12px;padding:10px 12px;background:white}
+button.action{background:var(--blue);color:white;border:0;font-weight:700;cursor:pointer}
+button.secondary{background:white;color:var(--navy);border:1px solid #bfd1dd}
+.metric{background:linear-gradient(180deg,#fff,#f7fbfd);border:1px solid #dbe7ee;border-radius:16px;padding:18px;text-align:center}
+.metric .n{font-size:34px;font-weight:900;color:var(--navy)}
+.student-row{display:grid;grid-template-columns:1.5fr repeat(4,.7fr) .8fr 1fr;gap:7px;align-items:center;padding:9px;border-bottom:1px solid #edf2f5}
+.student-row.head{font-weight:800;background:#f0f6fa;border-radius:10px}
+.student-row input[type=number]{width:70px;text-align:center}
+@media(max-width:850px){.student-row{grid-template-columns:1fr 1fr}.student-row.head{display:none}.student-row>*:before{font-size:11px;color:#789;display:block}}
+.check-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed #dfe8ee}
+.check-item input{transform:scale(1.25);margin-top:4px}
+.notice{background:#fff9e7;border:1px solid #f1dda1;padding:12px 14px;border-radius:14px;color:#6b5718}
+footer{margin-top:30px;text-align:center;color:#789;font-size:13px}
+.small{font-size:13px;color:#789}
+#printBtn{background:var(--teal)}
+@media print{
+ header,nav.tabs,.no-print{display:none!important}
+ body{background:white}
+ section.page{display:block!important;page-break-after:always}
+ main{max-width:none;padding:0}
+ .card{box-shadow:none}
+}
+
+.modal{display:none;position:fixed;inset:0;background:rgba(5,30,50,.55);z-index:100;padding:18px;overflow:auto}
+.modal.open{display:flex;align-items:flex-start;justify-content:center}
+.modal-box{width:min(760px,100%);background:white;border-radius:22px;padding:22px;margin-top:30px;box-shadow:0 24px 60px rgba(0,0,0,.25)}
+.modal-head{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.close{border:0;background:#eef4f7;border-radius:50%;width:38px;height:38px;font-size:20px;cursor:pointer}
+.passport{background:linear-gradient(135deg,#0b3b63,#1f6f9f);color:white;border-radius:18px;padding:20px;margin:14px 0}
+.stamp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}
+.stamp-btn{border:1px solid #d7e4ec;border-radius:15px;background:#fbfdff;padding:15px;cursor:pointer;font-weight:800;color:#17324d}
+.stamp-btn:hover{background:#eef8fb}
+.history{max-height:220px;overflow:auto;border:1px solid #e2ebf0;border-radius:14px}
+.history-item{padding:10px 12px;border-bottom:1px solid #edf2f5}
+.clickable-name{cursor:pointer;color:#0b5f91;font-weight:800}
+.clickable-name:hover{text-decoration:underline}
+@media(max-width:600px){.stamp-grid{grid-template-columns:1fr}}
+
+
+/* تحسين عرض الطالبات على الجوال */
+@media(max-width:850px){
+  #students .student-row:not(.head){display:block;background:#fff;border:1px solid #dbe7ee;border-radius:18px;padding:14px;margin:10px 0;box-shadow:0 5px 14px rgba(12,55,90,.05)}
+  #students .student-row:not(.head)>div:first-child strong{display:block;font-size:17px;line-height:1.7;color:var(--navy);margin-bottom:7px}
+  #students .student-row:not(.head) .stamp{display:none}
+  #students .student-row:not(.head) .points,#students .student-row:not(.head) .lvl{display:inline-block;margin:8px 4px 0;padding:7px 10px;background:#f2f7fa;border-radius:10px;font-weight:700}
+  #students .student-row:not(.head) .points:before{content:"النقاط: "}
+  #students .student-row:not(.head) .lvl:before{content:"المستوى: "}
+}
+
+
+.delete-stamp-btn{
+  width:100%;
+  margin:10px 0 4px;
+  padding:12px 14px;
+  border:1px solid #e7b9b9;
+  background:#fff7f7;
+  color:#a12d2d;
+  border-radius:14px;
+  font-weight:800;
+  cursor:pointer;
+}
+.delete-stamp-btn:active{transform:scale(.99)}
+
+
+.copy-link-btn{
+  width:100%;margin-top:6px;padding:7px;border:1px solid #bfd1dd;border-radius:10px;
+  background:white;color:#0b5f91;font-weight:800;cursor:pointer
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand">⚛️ فيزياء 360°</div>
+    <div class="progress"><span id="progressBar"></span></div>
+    <button class="action" id="printBtn" onclick="window.print()">طباعة / PDF</button>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <h1>فيزياء 360°</h1>
+    <p class="tagline">أتعلمها • أراها • أطبقها • أبتكرها</p>
+    <p>ملف المعلمة التفاعلي للتنفيذ والتوثيق</p>
+    <p><strong>إعداد المعلمة: دلال عسيري</strong></p>
+    <p>مبادرة صفية تحفيزية تربط تعلم الفيزياء بالفهم والملاحظة والتطبيق والابتكار، وتوثق تقدم الطالبة من خلال جواز إنجاز وأختام ملونة.</p>
+  </div>
+
+<div class="card no-print" style="margin-top:16px;padding:14px">
+  <h3 style="margin:0 0 10px;color:var(--navy)">الوصول السريع</h3>
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:9px">
+    <button class="action secondary" onclick="showPage(0)">🏠 الرئيسية</button>
+    <button class="action" onclick="showPage(4)">👩🏻‍🎓 الطالبات</button>
+    <button class="action secondary" onclick="showPage(1)">🏅 الأختام</button>
+    <button class="action secondary" onclick="showPage(6)">📁 الشواهد</button>
+    <button class="action secondary" onclick="showPage(7)">📊 النتائج</button>
+    <button class="action secondary" onclick="showPage(8)">✅ قائمة التحقق</button>
+  </div>
+</div>
+
+  <nav class="tabs no-print" id="tabs"></nav>
+
+  <section class="page active" data-title="بطاقة المبادرة">
+    <div class="grid">
+      <div class="card span-12">
+        <h2>1. بطاقة المبادرة</h2>
+        <table>
+          <tr><th>البند</th><th>البيان</th></tr>
+          <tr><td>اسم المبادرة</td><td>فيزياء 360°</td></tr>
+          <tr><td>الشعار</td><td>أتعلمها • أراها • أطبقها • أبتكرها</td></tr>
+          <tr><td>مجال المبادرة</td><td>تعليمي – تحفيزي – إثرائي</td></tr>
+          <tr><td>الفئة المستهدفة</td><td>طالبات المرحلة الثانوية</td></tr>
+          <tr><td>منفذة المبادرة</td><td>المعلمة دلال عسيري</td></tr>
+          <tr><td>مدة التنفيذ</td><td>فصل دراسي أو عام دراسي بحسب الخطة</td></tr>
+          <tr><td>مكان التنفيذ</td><td>الفصل الدراسي / المختبر / البيئة الرقمية</td></tr>
+        </table>
+      </div>
+      <div class="card span-6">
+        <h2>2. فكرة المبادرة</h2>
+        <p>تحويل تعلم الفيزياء إلى رحلة متدرجة تمر فيها الطالبة بأربع محطات: فهم المفهوم، اكتشافه في الحياة، تطبيقه عمليًا، ثم الابتكار انطلاقًا منه. تحصل الطالبة عند تحقيق معيار كل محطة على ختم خاص في جواز «فيزياء 360°»، وتتراكم الأختام والنقاط حتى تصل إلى مستويات إنجاز أعلى.</p>
+      </div>
+      <div class="card span-6">
+        <h2>3. مبررات التنفيذ</h2>
+        <ul>
+          <li>رفع دافعية الطالبات للمشاركة والتعلم النشط.</li>
+          <li>ربط المفاهيم والقوانين الفيزيائية بالحياة اليومية.</li>
+          <li>زيادة فرص التطبيق العملي والتجريب والمحاكاة.</li>
+          <li>تعزيز الإبداع والابتكار والعمل التعاوني.</li>
+          <li>توفير شواهد واضحة وقابلة للتوثيق على تقدم الطالبات.</li>
+        </ul>
+      </div>
+      <div class="card span-12">
+        <h2>4. أهداف المبادرة</h2>
+        <ul>
+          <li>تحسين فهم الطالبات للمفاهيم والقوانين الفيزيائية.</li>
+          <li>تنمية القدرة على تفسير الظواهر الفيزيائية في الحياة.</li>
+          <li>تنمية مهارات التجريب والتطبيق وحل المشكلات.</li>
+          <li>تشجيع الطالبات على تقديم أفكار ونماذج مبتكرة.</li>
+          <li>تعزيز المسؤولية الذاتية والتحفيز الإيجابي نحو التعلم.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" data-title="المحطات والأختام">
+    <div class="card">
+      <h2>5. المحطات والأختام</h2>
+      <div class="grid">
+        <div class="station span-6"><strong>🧠 أتعلمها <span class="badge b1">🔵 أتقنتها</span></strong>عند إتقان مفهوم أو قانون وإظهار فهم صحيح.</div>
+        <div class="station span-6"><strong>👁️ أراها <span class="badge b2">🟣 اكتشفتها</span></strong>عند ربط المفهوم الفيزيائي بظاهرة أو موقف من الحياة وتفسيره.</div>
+        <div class="station span-6"><strong>🔬 أطبقها <span class="badge b3">🟢 طبقتها</span></strong>عند تنفيذ تجربة أو نشاط أو محاكاة وتفسير النتيجة.</div>
+        <div class="station span-6"><strong>💡 أبتكرها <span class="badge b4">🟠 ابتكرتها</span></strong>عند تقديم فكرة أو نموذج أو حل جديد مبني على التعلم.</div>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card span-6"><h2>6. دور المعلمة</h2><ul>
+        <li>تعريف الطالبات بالمبادرة والجواز والمحطات الأربع في بداية التطبيق.</li>
+        <li>اختيار تحديات قصيرة مرتبطة بالدروس دون تغيير الخطة التدريسية الأساسية.</li>
+        <li>إعلان الختم المستهدف قبل النشاط عند الحاجة لزيادة الحماس.</li>
+        <li>ملاحظة أداء الطالبات ومنح الختم فقط عند تحقق معيار الإنجاز.</li>
+        <li>تخصيص آخر 5 دقائق عند وجود ختم لتوثيق الإنجاز بدل الختم أثناء الشرح.</li>
+        <li>متابعة النقاط والمستويات بصورة دورية وتكريم الطالبات.</li>
+        <li>جمع الشواهد: صور الأنشطة، نماذج الأعمال، الجوازات، النتائج، والتكريم.</li>
+      </ul></div>
+      <div class="card span-6"><h2>7. دور الطالبة</h2><ul>
+        <li>الاحتفاظ بجوازها أو استخدامه عند توزيعه من صندوق الفصل.</li>
+        <li>المشاركة في التحديات والأنشطة المرتبطة بالمحطات.</li>
+        <li>تقديم دليل على الفهم أو التطبيق قبل استحقاق الختم.</li>
+        <li>متابعة نقاطها ومستواها والمحافظة على الجواز.</li>
+        <li>تطوير أعمالها للوصول من التعلم إلى الابتكار.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section class="page" data-title="آلية التنفيذ">
+    <div class="card">
+      <h2>8. آلية التنفيذ المختصرة</h2>
+      <table>
+        <tr><th>المرحلة</th><th>الإجراء</th></tr>
+        <tr><td>التهيئة</td><td>عرض بوستر المبادرة وشرح فكرة الجواز والأختام.</td></tr>
+        <tr><td>التنفيذ</td><td>اختيار فرصة أو فرصتين للختم في الوحدة بدل الختم في كل حصة.</td></tr>
+        <tr><td>التحقق</td><td>تتأكد المعلمة من تحقق معيار المحطة.</td></tr>
+        <tr><td>الختم</td><td>تضع المعلمة الختم في الصفحة المطابقة داخل جواز الطالبة.</td></tr>
+        <tr><td>النقاط</td><td>كل ختم = 5 نقاط، مع إمكانية تعديل النظام.</td></tr>
+        <tr><td>التكريم</td><td>إعلان المستويات وتكريم الطالبات في نهاية الفترة.</td></tr>
+      </table>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h2>9. الخطة الزمنية المقترحة</h2>
+      <table>
+        <tr><th>الفترة</th><th>التنفيذ المقترح</th></tr>
+        <tr><td>الأسبوع الأول</td><td>إطلاق المبادرة وتوزيع الجوازات وتنفيذ أول تحدٍ.</td></tr>
+        <tr><td>خلال كل وحدة</td><td>اختيار 1–2 فرصة للحصول على ختم بحسب طبيعة الدروس.</td></tr>
+        <tr><td>منتصف الفصل</td><td>مراجعة الجوازات والنقاط وتكريم تحفيزي بسيط.</td></tr>
+        <tr><td>نهاية الفصل</td><td>حصر النتائج وأفضل الأعمال وتحديد المستويات.</td></tr>
+        <tr><td>الختام</td><td>تكريم «خبيرات فيزياء 360°» وعرض نماذج مميزة.</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section class="page" data-title="النقاط والمستويات">
+    <div class="grid">
+      <div class="card span-6">
+        <h2>10. نظام النقاط والمستويات</h2>
+        <table>
+          <tr><th>النقاط</th><th>المستوى</th></tr>
+          <tr><td>0–45</td><td>مستكشفة الفيزياء</td></tr>
+          <tr><td>50–95</td><td>متمكنة</td></tr>
+          <tr><td>100–145</td><td>خبيرة</td></tr>
+          <tr><td>150 فأكثر</td><td>خبيرة فيزياء 360°</td></tr>
+        </table>
+      </div>
+      <div class="card span-6">
+        <h2>11. أمثلة جاهزة لمهام الختم</h2>
+        <ul>
+          <li><strong>أتقنتها:</strong> تحل الطالبة مسألة أو تفسر قانونًا وتوضح سبب اختيارها.</li>
+          <li><strong>اكتشفتها:</strong> تذكر تطبيقًا للمفهوم في المنزل أو المدرسة وتفسره فيزيائيًا.</li>
+          <li><strong>طبقتها:</strong> تنفذ تجربة قصيرة أو محاكاة وتسجل الملاحظة والاستنتاج.</li>
+          <li><strong>ابتكرتها:</strong> تصمم نموذجًا أو تقترح حلًا لمشكلة باستخدام مفهوم فيزيائي.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  
+  <section class="page" data-title="متابعة الطالبات">
+    <div class="card">
+      <h2>متابعة الطالبات التفاعلية</h2>
+      <p class="notice">اختاري الشعبة، ثم افتحي بطاقة الطالبة لمنح الأختام ومتابعة النقاط والمستوى. البيانات محفوظة في Firebase وتظهر من أي جهاز بعد تسجيل دخول المعلمة.</p>
+      <div class="controls no-print" style="margin:14px 0">
+        <button class="action" id="loginBtn" onclick="teacherLogin()">🔐 دخول المعلمة</button>
+        <button class="action secondary" id="logoutBtn" onclick="teacherLogout()" style="display:none">تسجيل الخروج</button>
+        <span id="authStatus" class="small" style="font-weight:800">غير مسجلة الدخول</span>
+      </div>
+      <div class="controls no-print" style="margin:14px 0">
+        <label style="font-weight:800">اختاري الشعبة:</label>
+        <select id="sectionSelect" onchange="changeSection(this.value)">
+          <option value="1">الشعبة الأولى</option>
+          <option value="2">الشعبة الثانية</option>
+          <option value="3">الشعبة الثالثة</option>
+        </select>
+        <button class="action" onclick="initializeStudents()">تهيئة/مزامنة الطالبات</button>
+      </div>
+      <div class="grid">
+        <div class="metric span-4"><div class="n" id="totalStudents">0</div><div>طالبات الشعبة</div></div>
+        <div class="metric span-4"><div class="n" id="topCount">0</div><div>خبيرات 360°</div></div>
+        <div class="metric span-4"><div class="n" id="avgPoints">0</div><div>متوسط النقاط</div></div>
+      </div>
+      <div id="students" style="margin-top:16px"></div>
+    </div>
+  </section>
+
+  <section class="page" data-title="القياس والتقويم">
+    <div class="grid">
+      <div class="card span-6">
+        <h2>12. مؤشرات النجاح</h2>
+        <ul>
+          <li>ارتفاع نسبة مشاركة الطالبات في الأنشطة.</li>
+          <li>زيادة عدد الطالبات اللاتي يحققن مستويات الإتقان.</li>
+          <li>تحسن نتائج التقويم القبلي والبعدي أو الاختبارات القصيرة.</li>
+          <li>تنوع منتجات الطالبات بين تفسير وتجربة ونموذج وابتكار.</li>
+          <li>وصول نسبة مناسبة من الطالبات إلى المستويات العليا في الجواز.</li>
+        </ul>
+      </div>
+      <div class="card span-6">
+        <h2>13. أدوات القياس والتقويم</h2>
+        <ul>
+          <li>اختبارات قصيرة قبل/بعد</li><li>بطاقة ملاحظة</li><li>جواز الطالبة</li>
+          <li>عدد الأختام والنقاط</li><li>نماذج أعمال الطالبات</li><li>استبانة رضا مختصرة</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" data-title="سجل الشواهد">
+    <div class="card">
+      <h2>14. سجل توثيق الشواهد</h2>
+      <div class="controls no-print" style="margin-bottom:12px">
+        <button class="action" onclick="addEvidence()">+ إضافة شاهد</button>
+        <button class="action secondary" onclick="saveEvidence()">حفظ السجل</button>
+      </div>
+      <table id="evidenceTable">
+        <thead><tr><th>التاريخ</th><th>الدرس/النشاط</th><th>المحطة</th><th>نوع الشاهد</th><th>ملاحظات</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="page" data-title="النتائج والتوصيات">
+    <div class="grid">
+      <div class="card span-6">
+        <h2>15. نتائج المبادرة</h2>
+        <label>نسبة المشاركة</label><input id="participation" style="width:100%" placeholder="مثال: 90%">
+        <label>نسبة التحسن</label><input id="improvement" style="width:100%" placeholder="مثال: 25%">
+        <label>عدد الطالبات في أعلى مستوى</label><input id="highest" style="width:100%" placeholder="مثال: 18">
+        <label>أبرز أثر ملاحظ</label><textarea id="impact" rows="5" style="width:100%" placeholder="اكتبي أبرز أثر..."></textarea>
+        <div class="controls no-print" style="margin-top:10px"><button class="action" onclick="saveResults()">حفظ النتائج</button></div>
+      </div>
+      <div class="card span-6">
+        <h2>16. التوصيات</h2>
+        <ul>
+          <li>استمرار المبادرة مع تطوير التحديات بحسب احتياج الطالبات.</li>
+          <li>تنويع فرص الحصول على الأختام وعدم ربطها بالتحصيل الكتابي فقط.</li>
+          <li>إشراك الطالبات في اقتراح تحديات جديدة.</li>
+          <li>عرض أفضل الأعمال في ركن أو معرض ختامي.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" data-title="قائمة التحقق">
+    <div class="card">
+      <h2>17. قائمة التحقق للمعلمة</h2>
+      <div id="checklist"></div>
+      <div class="controls no-print" style="margin-top:12px">
+        <button class="action" onclick="saveChecklist()">حفظ القائمة</button>
+      </div>
+    </div>
+    <div class="hero" style="margin-top:16px;padding:26px">
+      <h2 style="margin:0">فيزياء 360°</h2>
+      <p class="tagline">تعلّم يُرى، وتطبيق يُمارس، وابتكار يُحتفى به</p>
+    </div>
+  </section>
+
+  
+<div class="modal no-print" id="studentModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="modalName" style="margin:0;color:var(--navy)">بطاقة الطالبة</h2>
+      <button class="close" onclick="closeStudent()">×</button>
+    </div>
+    <div class="passport">
+      <div class="small" style="color:#d8f4ff">جواز فيزياء 360° الإلكتروني — <span id="passportSection"></span></div>
+      <h2 id="passportName" style="margin:6px 0;color:white">الطالبة</h2>
+      <div>النقاط: <strong id="passportPoints">0</strong> — المستوى: <strong id="passportLevel">مستكشفة الفيزياء</strong></div>
+    </div>
+    <h3>منح ختم</h3>
+    <div class="stamp-grid">
+      <button class="stamp-btn" onclick="grantStamp('a','🔵 أتقنتها','أتعلمها')">🧠 أتعلمها<br><span class="small">🔵 أتقنتها +5</span></button>
+      <button class="stamp-btn" onclick="grantStamp('b','🟣 اكتشفتها','أراها')">👁️ أراها<br><span class="small">🟣 اكتشفتها +5</span></button>
+      <button class="stamp-btn" onclick="grantStamp('c','🟢 طبقتها','أطبقها')">🔬 أطبقها<br><span class="small">🟢 طبقتها +5</span></button>
+      <button class="stamp-btn" onclick="grantStamp('d','🟠 ابتكرتها','أبتكرها')">💡 أبتكرها<br><span class="small">🟠 ابتكرتها +5</span></button>
+    </div>
+    <button class="delete-stamp-btn" onclick="deleteLastStamp()">🗑️ حذف آخر ختم</button>
+    <h3>سجل إنجازات الطالبة</h3>
+    <div class="history" id="studentHistory"></div>
+  </div>
+</div>
+
+<footer>ملف تفاعلي قابل للتصفح والحفظ محليًا على الجهاز — فيزياء 360°</footer>
+</main>
+
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {"apiKey": "AIzaSyAI6d40bdSpLd87gRPYrkNYDf5vnHUKeVw", "authDomain": "physics360-25dba.firebaseapp.com", "projectId": "physics360-25dba", "storageBucket": "physics360-25dba.firebasestorage.app", "messagingSenderId": "465379336660", "appId": "1:465379336660:web:5ce7c0f1c2f021692f3641"};
+firebase.initializeApp(firebaseConfig);
+const fbAuth = firebase.auth();
+const fbDb = firebase.firestore();
+const TEACHER_EMAIL = "daloo444@gmail.com";
+</script>
+
+<script>
+const pages=[...document.querySelectorAll('section.page')];
+const tabs=document.getElementById('tabs');
+pages.forEach((p,i)=>{
+  const b=document.createElement('button');
+  const icons=['🏠','🏅','🧭','⭐','👩🏻‍🎓','📏','📁','📊','✅']; b.textContent=(icons[i]||'•')+' '+p.dataset.title;
+  b.onclick=()=>showPage(i);
+  if(i===0)b.classList.add('active');
+  tabs.appendChild(b);
+});
+function showPage(i){
+  pages.forEach((p,j)=>p.classList.toggle('active',i===j));
+  [...tabs.children].forEach((b,j)=>b.classList.toggle('active',i===j));
+  document.getElementById('progressBar').style.width=((i+1)/pages.length*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+showPage(0);
+
+function level(points){
+  if(points>=150)return 'خبيرة فيزياء 360°';
+  if(points>=100)return 'خبيرة';
+  if(points>=50)return 'متمكنة';
+  return 'مستكشفة الفيزياء';
+}
+
+
+const STUDENTS_BY_SECTION = {"1": ["ارجوان بنت حسن بن علي بن محمد حمدي", "ارجوان خالد محمد نجمي", "العنود عبدالله محمد خميسي", "الهنوف عبداللة محمد خميسي", "الين هاني محمد فقيهي", "اماني قيمان على حمدي", "أميره بنت عبدالله بن محمد بن يحي عكور حمدي", "بسمه حسن محمد نجمي", "بشرى بنت عبده بن يحي بن علي عكور", "بيادر حسن عبده نجمي", "تالا ماجد بن أحمد نجمي", "جمانه حسن أحمد نجمي", "جنى بنت عبدالله بن محمد عزالدين حمدي", "جنى بنت محمد بن منصور بن محمد صميلي", "جوان محمد عبداللة نجمي", "جود احمد يحيى حملي", "جود سلمان احمد حمدي", "جوري بنت محمد بن ابراهيم بن محمد عكور حمدي", "حليمه محمد حسن حكمي", "خديج بنت محمد بن حسين بن أحمد جابري حمدي", "ديمه توفيق محمد نجمي", "دينا بنت عبدالعزيز بن محمد بن  محمد عكور", "ربى بنت سريع بن علي بن محمد مشهور حمدي", "رحمه بنت فهد بن يحي بن عبده مشهور حمدي", "وداد محمد حسن حكمي"], "2": ["رسيل أسامه ابراهيم نجمي", "رسيل بنت علي بن احمد بن عبدالله عكور", "رغد بنت عبدالله بن محمد بن سهل مشهور حمدي", "رفال بنت عبده بن محمد بن عبدالله جماح حمدي", "رهف حمود محمد آل خيرات", "رواسن بنت عبدالله بن علي بن محمد عز الدين حمدي", "روان بنت علي بن عبده بن محمد مشهور حمدي", "ريتاج بنت يحيى بن احمد عكور", "ريلاس بنت محمد بن حسن بن محمد عكور حمدي", "ريماس بنت محمد بن علي بن احمد خزاعي حمدي", "زهراء صالح محسن هادي", "سجى محمد احمد حمدي", "سديم ابراهيم عبدالله محمد عكور", "سديم بنت سبتان بن عبده بن عبده حمدي", "سما بنت محمد بن علي بن محمد عكور", "شادن سليمان احمد قعيش", "ضحى بنت عبدالعزيز بن علي نجمي", "عائشه بنت محمد بن أبكر بن يحي قارضه", "عائشه سامي حمود آل خيرات", "غدير بنت عبده بن علي بن محمد مشهور حمدي"], "3": ["زينب رشيد مرشد عذاب", "غلا بنت عبدالعزيز بن حسين نجمي", "فاطمة علي عبدالله عكور", "فيء بنت عبدالله بن محمد بن حسين عكور", "لميس مروعي علي مرشد", "ليان بنت عبدالله بن حسين عكور", "ليان عبدالهادي عبدالله القاضي", "مدى احمد محمد نجمي", "مريم بنت علي بن علي بن جبران قيسي", "مريم بنت محمد بن محمد بن ابراهيم مشهور", "مريم حافظ محمد نجمي", "منى رشيد مرشد عذاب", "مها بنت مبارك بن علي مبروك", "مياسم بنت يحيى بن عبده بن يحي عكور حمدي", "ميس بنت عبد الكريم بن محمد بن يحيى صميلي", "نجود عبدالله عمر مهيوب", "نجوى عبدالله احمد خال", "نور محمد بن يحيى نجمي", "نوره يحيى بن محمد حمدي", "هيام بنت عبدالله بن محمد نجمي", "وتين تركي عبدالله حمدي", "وسن بنت علي بن حسن بن محمد عكور", "وصال سطام بن محمد نجمي", "وفاء هادي محمد هادي خوري", "ولاء بنت يحي بن محمد بن محمد عكور", "ولاء يحي احمد نجمي"]};
+const studentsEl=document.getElementById('students');
+let currentSection='1';
+let currentStudentId=null;
+let teacherUser=null;
+let liveStudents={};
+
+function studentLevel(points){
+  if(points>=150)return 'خبيرة فيزياء 360°';
+  if(points>=100)return 'خبيرة';
+  if(points>=50)return 'متمكنة';
+  return 'مستكشفة الفيزياء';
+}
+
+fbAuth.onAuthStateChanged(async user=>{
+  teacherUser = user && user.email === TEACHER_EMAIL ? user : null;
+  const status=document.getElementById('authStatus');
+  const login=document.getElementById('loginBtn');
+  const logout=document.getElementById('logoutBtn');
+  if(teacherUser){
+    status.textContent='مسجلة الدخول: '+teacherUser.email;
+    login.style.display='none';
+    logout.style.display='';
+    await loadStudents();
+  } else {
+    status.textContent='غير مسجلة الدخول';
+    login.style.display='';
+    logout.style.display='none';
+    liveStudents={};
+    buildStudents();
+    if(user) await fbAuth.signOut();
+  }
+});
+
+async function teacherLogin(){
+  const provider=new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({login_hint:TEACHER_EMAIL});
+  await fbAuth.signInWithRedirect(provider);
+}
+async function teacherLogout(){ await fbAuth.signOut(); }
+
+function randomToken(){
+  const arr=new Uint8Array(18);
+  crypto.getRandomValues(arr);
+  return Array.from(arr,b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+async function initializeStudents(){
+  if(!teacherUser){ alert('سجلي دخول المعلمة أولًا.'); return; }
+  const snap=await fbDb.collection('students').get();
+  const existing=new Set();
+  snap.forEach(doc=>{
+    const d=doc.data();
+    existing.add((d.section||'')+'|'+(d.name||''));
+  });
+  const batch=fbDb.batch();
+  let created=0;
+  for(const sec of Object.keys(STUDENTS_BY_SECTION)){
+    for(const name of STUDENTS_BY_SECTION[sec]){
+      const key=sec+'|'+name;
+      if(!existing.has(key)){
+        const ref=fbDb.collection('students').doc(randomToken());
+        batch.set(ref,{
+          name,section:sec,a:0,b:0,c:0,d:0,history:[],
+          updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+        });
+        created++;
+      }
+    }
+  }
+  if(created) await batch.commit();
+  alert(created ? `تمت إضافة ${created} طالبة إلى Firebase ✅` : 'الطالبات موجودات مسبقًا، تمت المزامنة ✅');
+  await loadStudents();
+}
+
+async function loadStudents(){
+  if(!teacherUser)return;
+  const snap=await fbDb.collection('students').get();
+  liveStudents={};
+  snap.forEach(doc=>liveStudents[doc.id]={id:doc.id,...doc.data()});
+  buildStudents();
+}
+
+function changeSection(sec){ currentSection=String(sec); buildStudents(); }
+
+function buildStudents(){
+  studentsEl.innerHTML='';
+  const head=document.createElement('div');
+  head.className='student-row head';
+  head.innerHTML='<div>اسم الطالبة</div><div>أتقنتها</div><div>اكتشفتها</div><div>طبقتها</div><div>ابتكرتها</div><div>النقاط</div><div>المستوى</div>';
+  studentsEl.appendChild(head);
+
+  const rows=Object.values(liveStudents)
+    .filter(d=>String(d.section)===currentSection)
+    .sort((a,b)=>(a.name||'').localeCompare(b.name||'','ar'));
+
+  rows.forEach(d=>{
+    const pts=((d.a||0)+(d.b||0)+(d.c||0)+(d.d||0))*5;
+    const row=document.createElement('div');
+    row.className='student-row';
+    row.dataset.id=d.id;
+    row.innerHTML=`
+      <div>
+        <strong>${d.name}</strong>
+        <button class="action secondary" style="width:100%;margin-top:6px;padding:7px" onclick="openStudent('${d.id}')">فتح البطاقة 👤</button>
+        <button class="copy-link-btn" onclick="copyStudentLink('${d.id}')">🔗 نسخ رابط الطالبة</button>
+      </div>
+      <input class="stamp" type="number" min="0" value="${d.a||0}" disabled>
+      <input class="stamp" type="number" min="0" value="${d.b||0}" disabled>
+      <input class="stamp" type="number" min="0" value="${d.c||0}" disabled>
+      <input class="stamp" type="number" min="0" value="${d.d||0}" disabled>
+      <div class="points">${pts}</div>
+      <div class="lvl">${studentLevel(pts)}</div>`;
+    studentsEl.appendChild(row);
+  });
+  recalc();
+}
+
+function recalc(){
+  const rows=Object.values(liveStudents).filter(d=>String(d.section)===currentSection);
+  let total=0,top=0;
+  rows.forEach(d=>{
+    const pts=((d.a||0)+(d.b||0)+(d.c||0)+(d.d||0))*5;
+    total+=pts;
+    if(pts>=150)top++;
+  });
+  document.getElementById('totalStudents').textContent=rows.length;
+  document.getElementById('topCount').textContent=top;
+  document.getElementById('avgPoints').textContent=rows.length?Math.round(total/rows.length):0;
+}
+
+function copyStudentLink(id){
+  const base=location.href.split('/').slice(0,-1).join('/')+'/student.html?id='+encodeURIComponent(id);
+  navigator.clipboard.writeText(base)
+    .then(()=>alert('تم نسخ رابط الطالبة ✅'))
+    .catch(()=>prompt('انسخي الرابط:',base));
+}
+
+function openStudent(id){
+  currentStudentId=id;
+  const d=liveStudents[id]; if(!d)return;
+  const pts=((d.a||0)+(d.b||0)+(d.c||0)+(d.d||0))*5;
+  document.getElementById('modalName').textContent='بطاقة '+d.name;
+  document.getElementById('passportName').textContent=d.name;
+  document.getElementById('passportSection').textContent='الشعبة '+d.section;
+  document.getElementById('passportPoints').textContent=pts;
+  document.getElementById('passportLevel').textContent=studentLevel(pts);
+  renderHistory();
+  document.getElementById('studentModal').classList.add('open');
+}
+
+function closeStudent(){
+  document.getElementById('studentModal').classList.remove('open');
+  currentStudentId=null;
+}
+
+async function grantStamp(key,label,station){
+  if(!teacherUser){ alert('سجلي دخول المعلمة أولًا.'); return; }
+  if(!currentStudentId)return;
+  const d=liveStudents[currentStudentId];
+  const history=Array.isArray(d.history)?d.history:[];
+  const item={
+    label,station,
+    date:new Date().toLocaleDateString('ar-SA'),
+    time:new Date().toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})
+  };
+  const nextValue=parseInt(d[key]||0)+1;
+  const nextHistory=[item,...history];
+  await fbDb.collection('students').doc(currentStudentId).update({
+    [key]:nextValue,
+    history:nextHistory,
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  });
+  liveStudents[currentStudentId]={...d,[key]:nextValue,history:nextHistory};
+  buildStudents();
+  openStudent(currentStudentId);
+}
+
+async function deleteLastStamp(){
+  if(!teacherUser){ alert('سجلي دخول المعلمة أولًا.'); return; }
+  const d=liveStudents[currentStudentId]; if(!d)return;
+  const history=Array.isArray(d.history)?[...d.history]:[];
+  if(!history.length){ alert('لا يوجد ختم مسجل لحذفه.'); return; }
+  const last=history[0];
+  const stationToKey={'أتعلمها':'a','أراها':'b','أطبقها':'c','أبتكرها':'d'};
+  const key=stationToKey[last.station];
+  if(!confirm('هل تريدين حذف آخر ختم للطالبة؟\n\n'+last.label+' — '+last.station))return;
+  history.shift();
+  const nextValue=Math.max(0,parseInt(d[key]||0)-1);
+  await fbDb.collection('students').doc(currentStudentId).update({
+    [key]:nextValue,
+    history,
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  });
+  liveStudents[currentStudentId]={...d,[key]:nextValue,history};
+  buildStudents();
+  openStudent(currentStudentId);
+  alert('تم حذف آخر ختم وخصم 5 نقاط ✅');
+}
+
+function renderHistory(){
+  const d=liveStudents[currentStudentId];
+  const h=d && Array.isArray(d.history)?d.history:[];
+  const el=document.getElementById('studentHistory');
+  if(!h.length){
+    el.innerHTML='<div class="history-item small">لا توجد إنجازات مسجلة بعد.</div>';
+    return;
+  }
+  el.innerHTML=h.map(x=>`<div class="history-item"><strong>${x.label}</strong> — ${x.station}<br><span class="small">${x.date} • ${x.time}</span></div>`).join('');
+}
+
+document.getElementById('studentModal').addEventListener('click',e=>{if(e.target.id==='studentModal')closeStudent();});
+buildStudents();
+
+const checklistItems=[
+'تم شرح المبادرة للطالبات','تم توزيع جوازات الطالبات','تم تجهيز الأختام الأربعة',
+'تم تحديد فرص الختم في الوحدات','تم جمع الشواهد أثناء التنفيذ','تم قياس الأثر وتوثيق النتائج','تم تكريم الطالبات في نهاية المبادرة'
+];
+const chk=document.getElementById('checklist');
+const chkSaved=JSON.parse(localStorage.getItem('physics360_check')||'[]');
+checklistItems.forEach((t,i)=>{
+  const div=document.createElement('label');div.className='check-item';
+  div.innerHTML=`<input type="checkbox" ${chkSaved[i]?'checked':''}><span>${t}</span>`;
+  chk.appendChild(div);
+});
+function saveChecklist(){
+  localStorage.setItem('physics360_check',JSON.stringify([...chk.querySelectorAll('input')].map(x=>x.checked)));
+  alert('تم حفظ قائمة التحقق ✅');
+}
+
+function evidenceRow(d={}){
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td><input type="date" value="${d.date||''}"></td>
+  <td><input value="${d.lesson||''}" placeholder="الدرس/النشاط"></td>
+  <td><select><option>أتعلمها</option><option>أراها</option><option>أطبقها</option><option>أبتكرها</option></select></td>
+  <td><input value="${d.type||''}" placeholder="صورة / عمل / نتيجة..."></td>
+  <td><input value="${d.notes||''}" placeholder="ملاحظات"></td>`;
+  tr.querySelector('select').value=d.station||'أتعلمها';
+  document.querySelector('#evidenceTable tbody').appendChild(tr);
+}
+function addEvidence(){evidenceRow();}
+function saveEvidence(){
+  const data=[...document.querySelectorAll('#evidenceTable tbody tr')].map(tr=>{
+    const x=tr.querySelectorAll('input'), s=tr.querySelector('select');
+    return {date:x[0].value,lesson:x[1].value,station:s.value,type:x[2].value,notes:x[3].value};
+  });
+  localStorage.setItem('physics360_evidence',JSON.stringify(data));alert('تم حفظ سجل الشواهد ✅');
+}
+(JSON.parse(localStorage.getItem('physics360_evidence')||'[]').length?JSON.parse(localStorage.getItem('physics360_evidence')):[{}, {}, {}, {}, {}]).forEach(evidenceRow);
+
+function saveResults(){
+  const ids=['participation','improvement','highest','impact'];
+  localStorage.setItem('physics360_results',JSON.stringify(Object.fromEntries(ids.map(id=>[id,document.getElementById(id).value]))));
+  alert('تم حفظ النتائج ✅');
+}
+const rs=JSON.parse(localStorage.getItem('physics360_results')||'{}');
+Object.entries(rs).forEach(([k,v])=>{if(document.getElementById(k))document.getElementById(k).value=v;});
+</script>
+</body>
+</html>

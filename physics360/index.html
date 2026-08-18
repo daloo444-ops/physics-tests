@@ -694,11 +694,13 @@ Object.entries(rs).forEach(([k,v])=>{if(document.getElementById(k))document.getE
   apiKey: "AIzaSyAI6d40bdSpLd87gRPYrkNYDf5vnHUKeVw",
   authDomain: "physics360-25dba.firebaseapp.com",
   projectId: "physics360-25dba",
+    databaseURL: "https://physics360-25dba-default-rtdb.firebaseio.com",
   storageBucket: "physics360-25dba.firebasestorage.app",
   messagingSenderId: "465379336660",
   appId: "1:465379336660:web:5ce7c0f1c2f021692f3641"
 };
   const app = firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
 </script/> 
   
   </body>

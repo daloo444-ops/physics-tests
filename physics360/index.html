@@ -468,9 +468,32 @@ fbAuth.onAuthStateChanged(async user=>{
 });
 
 async function teacherLogin(){
-  const provider=new firebase.auth.GoogleAuthProvider();
+  const provider = new firebase.auth.GoogleAuthProvider();
   provider.setCustomParameters({login_hint:TEACHER_EMAIL});
-  await fbAuth.signInWithRedirect(provider);
+
+  try {
+    const result = await fbAuth.signInWithPopup(provider);
+    const user = result.user;
+
+    if (user && user.email === TEACHER_EMAIL) {
+      teacherUser = user;
+
+      document.getElementById('authStatus').textContent =
+        'مسجلة الدخول: ' + user.email;
+
+      document.getElementById('loginBtn').style.display = 'none';
+      document.getElementById('logoutBtn').style.display = '';
+
+      await loadStudents();
+    } else {
+      await fbAuth.signOut();
+      alert('هذا الحساب غير مصرح له بإدارة فيزياء 360.');
+    }
+
+  } catch (error) {
+    alert('تعذر تسجيل الدخول: ' + error.message);
+    console.error(error);
+  }
 }
 async function teacherLogout(){ await fbAuth.signOut(); }
 

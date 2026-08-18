@@ -470,7 +470,7 @@ fbAuth.onAuthStateChanged(async user=>{
 async function teacherLogin(){
   const provider=new firebase.auth.GoogleAuthProvider();
   provider.setCustomParameters({login_hint:TEACHER_EMAIL});
-  await fbAuth.signInWithPopup(provider);
+  await fbAuth.signInWithRedirect(provider);
 }
 async function teacherLogout(){ await fbAuth.signOut(); }
 

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>جواز فيزياء 360° الإلكتروني</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;background:#f6f9fc;color:#17324d}
+main{max-width:680px;margin:auto;padding:22px 16px 60px}
+.hero{background:linear-gradient(135deg,#0b3b63,#1f6f9f);color:#fff;border-radius:24px;padding:28px 22px;box-shadow:0 15px 35px rgba(11,59,99,.16)}
+.card{background:#fff;border:1px solid #e0e9ef;border-radius:18px;padding:18px;margin-top:14px;box-shadow:0 7px 20px rgba(12,55,90,.06)}
+.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.metric{background:#f3f8fb;border-radius:14px;padding:14px;text-align:center}
+.metric b{display:block;font-size:28px;color:#0b3b63}
+.stamps{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stamp{border-radius:14px;padding:15px;text-align:center;font-weight:800}
+.s1{background:#dcebff}.s2{background:#efe2ff}.s3{background:#e5f7df}.s4{background:#fff0da}
+.history-item{padding:10px 0;border-bottom:1px solid #edf2f5}
+.muted{color:#789;font-size:13px}
+.error{background:#fff2f2;color:#9b2c2c}
+</style>
+</head>
+<body>
+<main>
+  <div class="hero">
+    <h1 style="margin:0 0 8px">🎫 جواز فيزياء 360° الإلكتروني</h1>
+    <div>أتعلمها • أراها • أطبقها • أبتكرها</div>
+  </div>
+  <div id="content"><div class="card">جاري تحميل الجواز...</div></div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig={"apiKey": "AIzaSyAI6d40bdSpLd87gRPYrkNYDf5vnHUKeVw", "authDomain": "physics360-25dba.firebaseapp.com", "projectId": "physics360-25dba", "storageBucket": "physics360-25dba.firebasestorage.app", "messagingSenderId": "465379336660", "appId": "1:465379336660:web:5ce7c0f1c2f021692f3641"};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.firestore();
+
+function studentLevel(p){
+  if(p>=150)return'خبيرة فيزياء 360°';
+  if(p>=100)return'خبيرة';
+  if(p>=50)return'متمكنة';
+  return'مستكشفة الفيزياء';
+}
+
+const id=new URLSearchParams(location.search).get('id');
+const root=document.getElementById('content');
+
+if(!id){
+  root.innerHTML='<div class="card error">رابط الجواز غير مكتمل.</div>';
+} else {
+  db.collection('students').doc(id).get().then(doc=>{
+    if(!doc.exists) throw new Error('not-found');
+    const d=doc.data();
+    const pts=((d.a||0)+(d.b||0)+(d.c||0)+(d.d||0))*5;
+    const h=Array.isArray(d.history)?d.history:[];
+    root.innerHTML=`
+      <div class="card"><h2 style="margin-top:0">${d.name}</h2><div class="muted">الشعبة ${d.section}</div></div>
+      <div class="card metrics">
+        <div class="metric"><b>${pts}</b>النقاط</div>
+        <div class="metric"><b style="font-size:18px">${studentLevel(pts)}</b>المستوى</div>
+      </div>
+      <div class="card">
+        <h3>أختامي</h3>
+        <div class="stamps">
+          <div class="stamp s1">🔵 أتقنتها<br>${d.a||0}</div>
+          <div class="stamp s2">🟣 اكتشفتها<br>${d.b||0}</div>
+          <div class="stamp s3">🟢 طبقتها<br>${d.c||0}</div>
+          <div class="stamp s4">🟠 ابتكرتها<br>${d.d||0}</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>سجل الإنجازات</h3>
+        ${h.length ? h.map(x=>`<div class="history-item"><strong>${x.label}</strong> — ${x.station}<div class="muted">${x.date} • ${x.time}</div></div>`).join('') : '<div class="muted">لا توجد إنجازات مسجلة بعد.</div>'}
+      </div>`;
+  }).catch(()=>{
+    root.innerHTML='<div class="card error">تعذر فتح هذا الجواز. تأكدي من صحة الرابط.</div>';
+  });
+}
+</script>
+</body>
+</html>

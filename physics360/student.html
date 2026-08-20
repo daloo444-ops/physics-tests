@@ -70,6 +70,10 @@ if(!id){
           <div class="stamp s4">🟠 ابتكرتها<br>${d.d||0}</div>
         </div>
       </div>
+     <div class="card" style="text-align:center">
+  <h3>🎁 امتياز فيزياء 360°</h3>
+  ${pts>=50 ? `<div style="font-size:18px;font-weight:800">🎉 مبروك! فتحتِ امتيازًا جديدًا</div>` : `<div>🔒 أول امتياز يفتح عند وصولك إلى 50 نقطة</div>`}
+</div>
       <div class="card">
         <h3>سجل الإنجازات</h3>
         ${h.length ? h.map(x=>`<div class="history-item"><strong>${x.label}</strong> — ${x.station}<div class="muted">${x.date} • ${x.time}</div></div>`).join('') : '<div class="muted">لا توجد إنجازات مسجلة بعد.</div>'}

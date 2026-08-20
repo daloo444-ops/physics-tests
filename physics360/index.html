@@ -285,6 +285,7 @@ footer{margin-top:30px;text-align:center;color:#789;font-size:13px}
           <option value="3">الشعبة الثالثة</option>
         </select>
         <button class="action" onclick="initializeStudents()">تهيئة/مزامنة الطالبات</button>
+        <button class="action secondary" onclick="copySectionLinks()">📋 نسخ روابط طالبات الشعبة</button>
       </div>
       <div class="grid">
         <div class="metric span-4"><div class="n" id="totalStudents">0</div><div>طالبات الشعبة</div></div>
@@ -593,7 +594,25 @@ function copyStudentLink(id){
     .then(()=>alert('تم نسخ رابط الطالبة ✅'))
     .catch(()=>prompt('انسخي الرابط:',base));
 }
+function copySectionLinks(){
+  const base = location.href.split('/').slice(0,-1).join('/');
+  const rows = Object.values(liveStudents)
+    .filter(d => String(d.section) === String(currentSection))
+    .sort((a,b) => (a.name||'').localeCompare(b.name||'','ar'));
 
+  if(!rows.length){
+    alert('لا توجد طالبات في هذه الشعبة.');
+    return;
+  }
+
+  const text = rows.map(d =>
+    `${d.name}\n${base}/student.html?id=${encodeURIComponent(d.id)}`
+  ).join('\n\n');
+
+  navigator.clipboard.writeText(text)
+    .then(() => alert(`تم نسخ روابط ${rows.length} طالبة ✅`))
+    .catch(() => prompt('انسخي روابط طالبات الشعبة:', text));
+}
 function openStudent(id){
   currentStudentId=id;
   const d=liveStudents[id]; if(!d)return;

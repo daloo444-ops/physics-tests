@@ -12,6 +12,9 @@ main{max-width:680px;margin:auto;padding:22px 16px 60px}
 .metric b{display:block;font-size:28px;color:#0b3b63}.stamps{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .stamp{border-radius:14px;padding:15px;text-align:center;font-weight:800}.s1{background:#dcebff}.s2{background:#efe2ff}.s3{background:#e5f7df}.s4{background:#fff0da}
 .history-item{padding:10px 0;border-bottom:1px solid #edf2f5}.muted{color:#789;font-size:13px}.error{background:#fff2f2;color:#9b2c2c}
+.launch-card{text-align:center}.launch-badge{width:150px;height:150px;object-fit:contain;margin:8px auto;display:block}.launch-locked{filter:grayscale(1);opacity:.28}.launch-earned{filter:none;opacity:1}.launch-title{font-weight:800;font-size:18px;margin-top:6px}.launch-note{color:#789;font-size:13px}
+
+.launch-card{display:flex;align-items:center;gap:14px}.launch-badge-visual{width:96px;height:96px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(145deg,#f1f1f1,#fafafa);border:3px solid #c9c9c9;opacity:.42;filter:grayscale(1);flex:0 0 96px}.launch-badge-visual.earned{opacity:1;filter:none;background:linear-gradient(145deg,#ffdce9,#fff8fb);border-color:#d8a0b7}.launch-badge-emoji{font-size:24px;line-height:1}.launch-badge-text{font-weight:900;color:#173f6c;font-size:14px;margin-top:5px}.launch-badge-sub{font-size:11px;color:#a24f73;font-weight:800}.launch-title{font-weight:900;color:#173f6c}.launch-note{font-size:13px;color:#789;margin-top:4px}
 </style>
 </head>
 <body><main>
@@ -34,6 +37,16 @@ else db.collection('students').doc(id).get().then(doc=>{
   const h=Array.isArray(d.history)?d.history:[];
   root.innerHTML=`
     <div class="card"><h2 style="margin-top:0">${d.name}</h2><div class="muted">الشعبة ${d.section}</div></div>
+
+    <div class="card launch-card"><h3>ملصق البداية</h3>
+      <div class="launch-badge-visual ${d.launchBadge?'earned':''}">
+        <div class="launch-badge-emoji">⚛️</div>
+        <div class="launch-badge-text">انطلقتُ</div>
+        <div class="launch-badge-sub">فيزياء 360°</div>
+      </div>
+      <div class="launch-title">${d.launchBadge?'✨ انطلقتُ في فيزياء 360':'🔒 لم يُمنح بعد'}</div>
+      <div class="launch-note">${d.launchBadge?'بدأتِ رحلتك في فيزياء 360 بنجاح':'يُمنح من المعلمة بعد بداية الرحلة'}</div>
+    </div>
     <div class="card metrics"><div class="metric"><b>${pts}</b>النقاط</div><div class="metric"><b style="font-size:18px">${level(pts)}</b>المستوى</div></div>
     <div class="card"><h3>أختامي</h3><div class="stamps">
       <div class="stamp s1">🔵 أتقنتها<br>${d.a||0}</div>

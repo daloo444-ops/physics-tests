@@ -111,6 +111,8 @@ footer{margin-top:30px;text-align:center;color:#789;font-size:13px}
 .auth-status{padding:8px 10px;border-radius:10px;background:#eef7fb;color:#0b3b63;font-weight:700}
 .copy-link-btn{width:100%;margin-top:6px;padding:7px;border:1px solid #bcd2df;border-radius:10px;background:white;color:#0b5f91;font-weight:700;cursor:pointer}
 .init-btn{background:#0b3b63!important}
+
+.launch-badge-wrap{display:flex;align-items:center;gap:14px;margin:14px 0;padding:14px;border:1px dashed #e3b6c8;background:#fff8fb;border-radius:18px}.launch-badge-img{width:96px;height:96px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(145deg,#f8e6ee,#fff7fb);border:3px solid #d8a0b7;box-shadow:0 4px 12px #0001;filter:grayscale(1);opacity:.38;flex:0 0 96px}.launch-badge-img.earned{filter:none;opacity:1;background:linear-gradient(145deg,#ffdce9,#fff8fb)}.launch-badge-emoji{font-size:24px;line-height:1}.launch-badge-text{font-weight:900;color:#173f6c;font-size:14px;margin-top:5px}.launch-badge-sub{font-size:11px;color:#a24f73;font-weight:800}.launch-badge-info{flex:1}.launch-badge-btn{width:100%;padding:11px 14px;border:0;border-radius:12px;background:#b85f83;color:#fff;font-weight:800;cursor:pointer}.launch-badge-btn[disabled]{background:#c9c9c9;cursor:default}
 </style>
 </head>
 <body>
@@ -379,6 +381,18 @@ footer{margin-top:30px;text-align:center;color:#789;font-size:13px}
       <h2 id="passportName" style="margin:6px 0;color:white">الطالبة</h2>
       <div>النقاط: <strong id="passportPoints">0</strong> — المستوى: <strong id="passportLevel">مستكشفة الفيزياء</strong></div>
     </div>
+    <h3>ملصق البداية</h3>
+    <div class="launch-badge-wrap">
+      <div id="launchBadgeImg" class="launch-badge-img" role="img" aria-label="انطلقت في فيزياء 360">
+        <div class="launch-badge-emoji">⚛️</div>
+        <div class="launch-badge-text">انطلقتُ</div>
+        <div class="launch-badge-sub">فيزياء 360°</div>
+      </div>
+      <div class="launch-badge-info">
+        <strong>✨ انطلقتُ في فيزياء 360</strong><br><span class="small">ملصق بداية الرحلة — بدون نقاط</span>
+        <div style="margin-top:9px"><button id="launchBadgeBtn" class="launch-badge-btn" onclick="grantLaunchBadge()">منح الملصق للطالبة</button></div>
+      </div>
+    </div>
     <h3>منح ختم</h3>
     <div class="stamp-grid">
       <button class="stamp-btn" onclick="grantStamp('a','🔵 أتقنتها','أتعلمها')">🧠 أتعلمها<br><span class="small">🔵 أتقنتها +5</span></button>
@@ -552,10 +566,27 @@ function openStudent(id){
   document.getElementById('passportSection').textContent='الشعبة '+d.section;
   document.getElementById('passportPoints').textContent=pts;
   document.getElementById('passportLevel').textContent=level(pts);
+  const earned=!!d.launchBadge;
+  document.getElementById('launchBadgeImg').classList.toggle('earned',earned);
+  const lb=document.getElementById('launchBadgeBtn');
+  lb.disabled=earned; lb.textContent=earned?'تم منح الملصق ✅':'منح الملصق للطالبة';
   renderHistory();
   document.getElementById('studentModal').classList.add('open');
 }
 function closeStudent(){document.getElementById('studentModal').classList.remove('open');currentStudentId=null;}
+
+async function grantLaunchBadge(){
+  if(!teacherUser){alert('سجلي دخول المعلمة أولًا.');return;}
+  if(!currentStudentId)return;
+  const d=liveStudents[currentStudentId];
+  if(d.launchBadge){alert('الملصق ممنوح لهذه الطالبة بالفعل ✅');return;}
+  const history=Array.isArray(d.history)?d.history:[];
+  const item={label:'✨ انطلقتُ في فيزياء 360',station:'بداية الرحلة',type:'launchBadge',date:new Date().toLocaleDateString('ar-SA'),time:new Date().toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})};
+  const nextHistory=[item,...history];
+  await fbDb.collection('students').doc(currentStudentId).update({launchBadge:true,history:nextHistory,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+  liveStudents[currentStudentId]={...d,launchBadge:true,history:nextHistory};
+  openStudent(currentStudentId);
+}
 
 async function grantStamp(key,label,station){
   if(!teacherUser){alert('سجلي دخول المعلمة أولًا.');return;}
@@ -578,6 +609,15 @@ async function deleteLastStamp(){
   const history=Array.isArray(d.history)?[...d.history]:[];
   if(!history.length){alert('لا يوجد ختم مسجل لحذفه.');return;}
   const last=history[0];
+  if(last.type==='launchBadge' || last.station==='بداية الرحلة'){
+    if(!confirm('هل تريدين حذف ملصق البداية للطالبة؟'))return;
+    history.shift();
+    await fbDb.collection('students').doc(currentStudentId).update({launchBadge:false,history,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    liveStudents[currentStudentId]={...d,launchBadge:false,history};
+    openStudent(currentStudentId);
+    alert('تم حذف ملصق البداية ✅');
+    return;
+  }
   const stationToKey={'أتعلمها':'a','أراها':'b','أطبقها':'c','أبتكرها':'d'};
   const key=stationToKey[last.station];
   if(!confirm('هل تريدين حذف آخر ختم؟\n\n'+last.label+' — '+last.station))return;

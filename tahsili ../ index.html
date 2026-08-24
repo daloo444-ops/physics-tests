@@ -1,24 +1,282 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>مذكرة تحصيلي فيزياء 3 - نسخة الطالبة</title>
-  <style>
-    html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      background: #f5f5f5;
-    }
-    iframe {
-      width: 100%;
-      height: 100vh;
-      border: none;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>فيزياء 3 - تدريب تحصيلي تفاعلي</title>
+<style>
+:root{--red:#9d0b18;--bg:#fff8f8;--card:#fff;--ink:#27222a;--ok:#16794a;--bad:#b3261e}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#fff,#fff5f5);color:var(--ink)}
+header{background:var(--red);color:#fff;padding:22px 16px;text-align:center;box-shadow:0 2px 10px #0002}
+header h1{margin:0;font-size:22px}
+header p{margin:6px 0 0;font-size:13px;opacity:.9}
+.wrap{max-width:900px;margin:auto;padding:18px}
+.hero{border:2px solid var(--red);border-radius:22px;padding:20px;background:white;text-align:center;margin-bottom:16px}
+.hero h2{color:var(--red);margin:0 0 8px}
+.note{font-size:13px;color:#6d5b5d;line-height:1.8}
+.teacher{margin-top:10px;color:var(--red);font-weight:800}
+.chapters{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:16px 0}
+button{font:inherit}
+.chapter-btn{border:1px solid #e2b8bc;background:#fff;border-radius:14px;padding:13px;text-align:right;color:var(--red);font-weight:700}
+.chapter-btn.active{background:var(--red);color:#fff}
+.bar{height:10px;background:#eadfe0;border-radius:99px;overflow:hidden;margin:12px 0}
+.bar>div{height:100%;background:var(--red);width:0}
+.stats{display:flex;gap:8px;flex-wrap:wrap;font-size:13px}
+.pill{background:#f4e8e9;padding:7px 10px;border-radius:99px}
+.card{background:white;border:1px solid #ead6d8;border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 8px 22px #5b00100b}
+.qnum{color:var(--red);font-weight:800;font-size:13px}
+.q{font-size:18px;font-weight:750;line-height:1.7;margin:8px 0 14px}
+.opts{display:grid;gap:9px}
+.opt{border:1.5px solid #d8c7c9;background:white;border-radius:13px;padding:12px;text-align:right}
+.opt.correct{border-color:var(--ok);background:#eaf8f1;color:#0c6138}
+.opt.wrong{border-color:var(--bad);background:#fff0ef;color:#8d1712}
+.feedback{display:none;margin-top:12px;border-radius:13px;padding:12px;line-height:1.7}
+.feedback.show{display:block}
+.feedback.ok{background:#eaf8f1;color:#0c6138}
+.feedback.bad{background:#fff0ef;color:#8d1712}
+.enrich{margin-top:9px;background:#fff8e7;border:1px solid #ead49a;color:#684900;padding:10px;border-radius:12px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.action{border:0;border-radius:12px;padding:11px 14px;font-weight:700}
+.primary{background:var(--red);color:#fff}
+.secondary{background:#eee5e6;color:var(--red)}
+.result{display:none;text-align:center;padding:24px;border:2px solid var(--red);border-radius:18px;background:white;margin:18px 0}
+.result.show{display:block}
+footer{text-align:center;color:#79696b;font-size:12px;padding:25px}
+</style>
 </head>
 <body>
-<iframe src="مذكرة تحصيلي فيزياء ٣ نسخة الطالبة.pdf"></iframe>
+
+<header>
+<h1>مذكرة التحصيلي - فيزياء 3</h1>
+<p>تدريب تفاعلي • تصحيح فوري • إثراءات مختصرة</p>
+</header>
+
+<main class="wrap">
+
+<section class="hero">
+<h2>فيزياء 360 | التحصيلي</h2>
+<div class="note">
+اختاري الفصل ثم أجيبي عن الأسئلة. بعد كل اختيار يظهر التصحيح والإثراء مباشرة.
+</div>
+<div class="teacher">إعداد المعلمة: دلال عسيري</div>
+</section>
+
+<div class="chapters" id="chapters"></div>
+
+<div class="stats">
+<span class="pill" id="score">الصحيح: 0</span>
+<span class="pill" id="answered">تمت الإجابة: 0</span>
+<span class="pill" id="total"></span>
+</div>
+
+<div class="bar"><div id="progress"></div></div>
+
+<section id="quiz"></section>
+
+<div class="actions">
+<button class="action primary" onclick="finish()">عرض النتيجة</button>
+<button class="action secondary" onclick="retryWrong()">إعادة الأسئلة الخاطئة</button>
+<button class="action secondary" onclick="resetChapter()">إعادة الفصل</button>
+</div>
+
+<div class="result" id="result"></div>
+
+</main>
+
+<footer>
+إعداد المعلمة: دلال عسيري<br>
+مراجعة فيزياء 3 • الصف الثالث الثانوي
+</footer>
+
+<script>
+const DATA=[
+{
+title:"الفصل الأول: حالات المادة",
+qs:[
+{id:1,q:"ما الخاصية التي تعبّر عن مقدار القوة المؤثرة عموديًا على وحدة المساحة؟",opts:["الكثافة","الضغط","اللزوجة","الطفو"],ans:1,tip:"الضغط يساوي القوة العمودية مقسومة على المساحة: P = F/A."},
+{id:2,q:"وحدة قياس الضغط في النظام الدولي هي:",opts:["N","Pa","J","W"],ans:1,tip:"الباسكال Pa يساوي نيوتن لكل متر مربع."},
+{id:3,q:"القوة التي يؤثر بها المائع في جسم مغمور فيه إلى أعلى تسمى:",opts:["قوة الاحتكاك","قوة الطفو","قوة الشد","القوة المركزية"],ans:1,tip:"قوة الطفو تنتج عن اختلاف ضغط المائع بين أسفل الجسم وأعلاه."},
+{id:4,q:"عند زيادة سرعة جريان المائع في أنبوب أفقي فإن ضغطه وفق مبدأ برنولي:",opts:["يزداد","يقل","لا يتغير","يساوي صفرًا"],ans:1,tip:"زيادة سرعة المائع تقترن بانخفاض ضغطه."}
+]
+},
+{
+title:"الفصل الثاني: الاهتزازات والموجات",
+qs:[
+{id:5,q:"في قانون هوك، القوة المؤثرة في النابض تتناسب طرديًا مع:",opts:["كتلة النابض","استطالته","درجة حرارته","زمنه الدوري"],ans:1,tip:"قانون هوك: F = kx."},
+{id:6,q:"عدد الاهتزازات الكاملة في الثانية يسمى:",opts:["الطول الموجي","السعة","التردد","الزمن الدوري"],ans:2,tip:"التردد هو عدد الدورات في الثانية ووحدته الهرتز Hz."},
+{id:7,q:"المسافة بين قمتين متتاليتين في موجة تسمى:",opts:["السعة","الطول الموجي","التردد","الطور"],ans:1,tip:"الطول الموجي λ هو المسافة بين نقطتين متفقتين في الطور."},
+{id:8,q:"إذا كان تردد موجة 4 Hz وسرعتها 12 m/s فإن طولها الموجي:",opts:["3 m","4 m","8 m","48 m"],ans:0,tip:"λ = v ÷ f = 12 ÷ 4 = 3 m."}
+]
+},
+{
+title:"الفصل الثالث: الصوت",
+qs:[
+{id:9,q:"الصوت في الهواء يعد موجة:",opts:["كهرومغناطيسية مستعرضة","ميكانيكية طولية","كهرومغناطيسية طولية","ساكنة فقط"],ans:1,tip:"الصوت يحتاج وسطًا ماديًا وينتقل في الهواء على هيئة تضاغطات وتخلخلات."},
+{id:10,q:"تعتمد حدة الصوت أساسًا على:",opts:["السعة","التردد","شدة الإضاءة","سرعة المصدر فقط"],ans:1,tip:"كلما زاد التردد ارتفعت حدة الصوت."},
+{id:11,q:"ظاهرة تغير التردد المسموع بسبب الحركة النسبية بين المصدر والمراقب تسمى:",opts:["الحيود","تأثير دوبلر","الاستقطاب","الانعكاس الكلي"],ans:1,tip:"تأثير دوبلر يغيّر التردد المرصود عند الاقتراب أو الابتعاد."},
+{id:12,q:"إذا كان أنبوب مفتوح الطرفين طوله L، فإن طول موجة النغمة الأساسية يساوي:",opts:["L/2","L","2L","4L"],ans:2,tip:"في النغمة الأساسية للأنبوب المفتوح: L = λ/2."}
+]
+},
+{
+title:"الفصل الرابع: أساسيات الضوء",
+qs:[
+{id:13,q:"وحدة قياس الاستضاءة هي:",opts:["اللومن","اللوكس","الكانديلا","الواط"],ans:1,tip:"اللوكس lx هو وحدة الاستضاءة."},
+{id:14,q:"عند ابتعاد سطح عن مصدر ضوئي نقطي، فإن الاستضاءة تتناسب عكسيًا مع:",opts:["المسافة","مربع المسافة","مكعب المسافة","شدة المصدر"],ans:1,tip:"E ∝ 1/r²."},
+{id:15,q:"أي الألوان الآتية له أعلى تردد في الطيف المرئي؟",opts:["الأحمر","الأصفر","الأخضر","البنفسجي"],ans:3,tip:"البنفسجي أعلى تردد وأقصر طول موجي ضمن الضوء المرئي."},
+{id:16,q:"الألوان الأساسية للضوء هي:",opts:["أحمر وأخضر وأزرق","أحمر وأصفر وأزرق","أصفر وسماوي وأرجواني","أبيض وأسود ورمادي"],ans:0,tip:"الأحمر والأخضر والأزرق هي الألوان الأساسية للضوء."}
+]
+},
+{
+title:"الفصل الخامس: الانعكاس والمرايا",
+qs:[
+{id:17,q:"وفق قانون الانعكاس فإن زاوية السقوط:",opts:["أكبر من زاوية الانعكاس","أصغر من زاوية الانعكاس","تساوي زاوية الانعكاس","تساوي ضعفها"],ans:2,tip:"زاوية السقوط تساوي زاوية الانعكاس."},
+{id:18,q:"الصورة المتكونة في المرآة المستوية تكون:",opts:["حقيقية مقلوبة","خيالية معتدلة ومساوية للجسم","حقيقية مكبرة دائمًا","خيالية مقلوبة"],ans:1,tip:"المرآة المستوية تعطي صورة خيالية معتدلة مساوية للجسم."},
+{id:19,q:"العلاقة بين البعد البؤري f ونصف قطر التكور r للمرآة الكروية هي:",opts:["f=r","f=2r","f=r/2","f=r²"],ans:2,tip:"f = r/2."},
+{id:20,q:"المرآة المستخدمة غالبًا لتوسيع مجال الرؤية في جوانب السيارات هي:",opts:["المستوية","المقعرة","المحدبة","القطع المكافئ"],ans:2,tip:"المرآة المحدبة تعطي مجال رؤية أوسع."}
+]
+},
+{
+title:"الفصل السادس: الانكسار والعدسات",
+qs:[
+{id:21,q:"انحراف الضوء عند انتقاله بين وسطين مختلفين في معامل الانكسار يسمى:",opts:["الانعكاس","الانكسار","الحيود","التداخل"],ans:1,tip:"يتغير اتجاه الضوء عندما تتغير سرعته بين وسطين."},
+{id:22,q:"عند انتقال الضوء من الهواء إلى الزجاج فإنه غالبًا:",opts:["يبتعد عن العمود","ينكسر نحو العمود","لا يغير سرعته","ينعكس كليًا دائمًا"],ans:1,tip:"عند الانتقال إلى وسط أكبر معامل انكسار ينكسر الضوء نحو العمود."},
+{id:23,q:"العدسة التي تجمع الأشعة المتوازية بعد مرورها بها هي:",opts:["المقعرة","المحدبة","المستوية","الأسطوانية فقط"],ans:1,tip:"العدسة المحدبة عدسة مجمعة."},
+{id:24,q:"الانعكاس الكلي الداخلي يحدث عندما ينتقل الضوء:",opts:["من وسط أقل معامل انكسار إلى أكبر","من وسط أكبر معامل انكسار إلى أقل وبزاوية أكبر من الحرجة","عموديًا على السطح","في الفراغ فقط"],ans:1,tip:"يشترط الانتقال من وسط أكبر معامل انكسار إلى أقل وتجاوز الزاوية الحرجة."}
+]
+},
+{
+title:"الفصل السابع: التداخل والحيود",
+qs:[
+{id:25,q:"ينتج التداخل البناء عندما تصل موجتان إلى نقطة وهما:",opts:["متعاكستان دائمًا","متفقتان في الطور","متعامدتان","مختلفتان في السرعة فقط"],ans:1,tip:"عند اتفاق الطور تتجمع السعات."},
+{id:26,q:"في تجربة شقي يونغ، زيادة الطول الموجي مع ثبات باقي العوامل تجعل المسافة بين الأهداب:",opts:["تقل","تزداد","لا تتغير","تساوي صفرًا"],ans:1,tip:"المسافة بين الأهداب تتناسب طرديًا مع الطول الموجي."},
+{id:27,q:"انتشار الموجة حول حواف العوائق والفتحات يسمى:",opts:["الاستقطاب","الحيود","الانكسار","دوبلر"],ans:1,tip:"الحيود هو انتشار وانحناء الموجات حول الحواف والفتحات."},
+{id:28,q:"أي الظواهر التالية تدل بوضوح على الطبيعة الموجية للضوء؟",opts:["التداخل والحيود","السقوط الحر","التوصيل الكهربائي","الحمل الحراري"],ans:0,tip:"التداخل والحيود من أبرز الأدلة على السلوك الموجي للضوء."}
+]
+},
+{
+title:"الفصل الثامن: الكهرباء الساكنة",
+qs:[
+{id:29,q:"الشحنات الكهربائية المتشابهة:",opts:["تتجاذب","تتنافر","لا تؤثر في بعضها","تفنى"],ans:1,tip:"الشحنات المتشابهة تتنافر والمختلفة تتجاذب."},
+{id:30,q:"شحن جسم دون ملامسته مباشرة بجسم مشحون يسمى الشحن بـ:",opts:["التوصيل","الحث","التأريض فقط","الاحتكاك فقط"],ans:1,tip:"الحث يعيد توزيع الشحنات دون تلامس مباشر."},
+{id:31,q:"وفق قانون كولوم، إذا تضاعفت المسافة بين شحنتين فإن القوة الكهربائية تصبح:",opts:["ضعفين","أربعة أضعاف","النصف","الربع"],ans:3,tip:"القوة تتناسب عكسيًا مع مربع المسافة."},
+{id:32,q:"وحدة ثابت كولوم k هي:",opts:["N·m²/C²","C/N","J/C²","N/C"],ans:0,tip:"من قانون كولوم تكون وحدة k هي N·m²/C²."}
+]
+},
+{
+title:"الفصل التاسع: المجالات الكهربائية",
+qs:[
+{id:33,q:"شدة المجال الكهربائي عند نقطة تعرف بأنها القوة المؤثرة في:",opts:["وحدة الكتلة","وحدة الشحنة الموجبة الاختبارية","وحدة الزمن","وحدة المساحة"],ans:1,tip:"E = F/q."},
+{id:34,q:"وحدة قياس شدة المجال الكهربائي هي:",opts:["N/C","C/N","J·C","W/m"],ans:0,tip:"وحدة المجال الكهربائي نيوتن لكل كولوم."},
+{id:35,q:"اتجاه خطوط المجال الكهربائي حول شحنة موجبة يكون:",opts:["نحو الشحنة","بعيدًا عن الشحنة","دائريًا دائمًا","بلا اتجاه"],ans:1,tip:"تخرج خطوط المجال من الشحنات الموجبة."},
+{id:36,q:"فرق الجهد الكهربائي يقاس بوحدة:",opts:["الأمبير","الكولوم","الفولت","التسلا"],ans:2,tip:"الفولت هو وحدة فرق الجهد الكهربائي."}
+]
+}
+];
+
+let ci=0;
+let state={};
+const letters=["أ","ب","ج","د"];
+
+function init(){
+const c=document.getElementById("chapters");
+DATA.forEach((x,i)=>{
+let b=document.createElement("button");
+b.className="chapter-btn"+(i===0?" active":"");
+b.textContent=x.title;
+b.onclick=()=>selectChapter(i);
+c.appendChild(b);
+});
+render();
+}
+
+function selectChapter(i){
+ci=i;
+document.querySelectorAll(".chapter-btn").forEach((b,j)=>b.classList.toggle("active",j===i));
+document.getElementById("result").classList.remove("show");
+render();
+}
+
+function render(filterWrong=false){
+const qs=DATA[ci].qs.filter(q=>!filterWrong||state[q.id]?.correct===false);
+const box=document.getElementById("quiz");
+box.innerHTML="";
+qs.forEach((q,idx)=>{
+let card=document.createElement("article");
+card.className="card";
+card.innerHTML=
+'<div class="qnum">السؤال '+(idx+1)+' من '+qs.length+'</div>'+
+'<div class="q">'+q.q+'</div>'+
+'<div class="opts">'+q.opts.map((o,j)=>'<button class="opt" data-j="'+j+'"><b>'+letters[j]+'.</b> '+o+'</button>').join("")+'</div>'+
+'<div class="feedback"></div>';
+
+box.appendChild(card);
+
+card.querySelectorAll(".opt").forEach(btn=>{
+btn.onclick=()=>answer(q,card,+btn.dataset.j);
+});
+
+if(state[q.id]) paint(q,card,state[q.id].choice);
+});
+updateStats();
+}
+
+function answer(q,card,choice){
+state[q.id]={choice:choice,correct:choice===q.ans};
+paint(q,card,choice);
+updateStats();
+}
+
+function paint(q,card,choice){
+card.querySelectorAll(".opt").forEach((b,j)=>{
+b.classList.remove("correct","wrong");
+if(j===q.ans)b.classList.add("correct");
+if(j===choice&&j!==q.ans)b.classList.add("wrong");
+});
+
+let f=card.querySelector(".feedback");
+let ok=choice===q.ans;
+
+f.className="feedback show "+(ok?"ok":"bad");
+f.innerHTML=(ok
+?"✅ أحسنتِ، إجابة صحيحة."
+:"❌ الإجابة غير صحيحة. الإجابة الصحيحة: <b>"+letters[q.ans]+"</b>")
++'<div class="enrich">💡 <b>إثراء:</b> '+q.tip+'</div>';
+}
+
+function updateStats(){
+let qs=DATA[ci].qs;
+let a=qs.filter(q=>state[q.id]).length;
+let s=qs.filter(q=>state[q.id]?.correct).length;
+document.getElementById("score").textContent="الصحيح: "+s;
+document.getElementById("answered").textContent="تمت الإجابة: "+a;
+document.getElementById("total").textContent="أسئلة الفصل: "+qs.length;
+document.getElementById("progress").style.width=(a/qs.length*100)+"%";
+}
+
+function finish(){
+let qs=DATA[ci].qs;
+let a=qs.filter(q=>state[q.id]).length;
+let s=qs.filter(q=>state[q.id]?.correct).length;
+let pct=Math.round(s/qs.length*100);
+let msg=pct>=90?"ممتاز جدًا 🌟":pct>=75?"رائع، واصلي 👏":pct>=60?"جيد، راجعي الإثراءات 💡":"راجعي المفاهيم ثم أعيدي المحاولة 💪";
+let r=document.getElementById("result");
+r.innerHTML='<h2>'+msg+'</h2><div style="font-size:34px;color:#9d0b18;font-weight:800">'+s+' / '+qs.length+'</div><p>النسبة: '+pct+'% • تمت الإجابة عن '+a+' سؤال</p>';
+r.classList.add("show");
+}
+
+function retryWrong(){
+render(true);
+}
+
+function resetChapter(){
+DATA[ci].qs.forEach(q=>delete state[q.id]);
+document.getElementById("result").classList.remove("show");
+render();
+}
+
+document.addEventListener("DOMContentLoaded",init);
+</script>
+
 </body>
 </html>

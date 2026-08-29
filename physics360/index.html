@@ -564,6 +564,25 @@ function copyParentLink(id){
     .then(()=>alert('تم نسخ رابط ولي الأمر ✅'))
     .catch(()=>prompt('انسخي رابط ولي الأمر:',base));
 }
+  function copyAllParentLinks(){
+  const base=location.href.split('/').slice(0,-1).join('/');
+  const rows=Object.values(liveStudents)
+    .filter(d=>String(d.section)===String(currentSection))
+    .sort((a,b)=>(a.name||'').localeCompare(b.name||'','ar'));
+
+  if(!rows.length){
+    alert('لا توجد طالبات في هذه الشعبة.');
+    return;
+  }
+
+  const text=rows.map(d=>
+    `${d.name}\n${base}/parent.html?id=${encodeURIComponent(d.id)}`
+  ).join('\n\n');
+
+  navigator.clipboard.writeText(text)
+    .then(()=>alert(`تم نسخ روابط أولياء أمور ${rows.length} طالبة ✅`))
+    .catch(()=>prompt('انسخي روابط أولياء الأمور:',text));
+}
 function openStudent(id){
   currentStudentId=id;
   const d=liveStudents[id]; if(!d)return;

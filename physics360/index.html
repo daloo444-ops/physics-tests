@@ -531,6 +531,7 @@ function buildStudents(){
       <div><strong>${d.name}</strong>
         <button class="action secondary" style="width:100%;margin-top:6px;padding:7px" onclick="openStudent('${d.id}')">فتح البطاقة 👤</button>
         <button class="copy-link-btn" onclick="copyStudentLink('${d.id}')">🔗 نسخ رابط الطالبة</button>
+        <button class="copy-link-btn" onclick="copyParentLink('${d.id}')">👨‍👩‍👧 نسخ رابط ولي الأمر</button>
       </div>
       <input class="stamp" type="number" value="${d.a||0}" disabled>
       <input class="stamp" type="number" value="${d.b||0}" disabled>
@@ -556,7 +557,12 @@ function copyStudentLink(id){
   const base=location.href.split('/').slice(0,-1).join('/')+'/student.html?id='+encodeURIComponent(id);
   navigator.clipboard.writeText(base).then(()=>alert('تم نسخ رابط الطالبة ✅')).catch(()=>prompt('انسخي الرابط:',base));
 }
-
+function copyParentLink(id){
+  const base=location.href.split('/').slice(0,-1).join('/')+'/parent.html?id='+encodeURIComponent(id);
+  navigator.clipboard.writeText(base)
+    .then(()=>alert('تم نسخ رابط ولي الأمر ✅'))
+    .catch(()=>prompt('انسخي رابط ولي الأمر:',base));
+}
 function openStudent(id){
   currentStudentId=id;
   const d=liveStudents[id]; if(!d)return;

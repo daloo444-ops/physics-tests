@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>متابعة ولي الأمر | فيزياء 360°</title>
+
+  <style>
+    body{
+      margin:0;
+      font-family:Tahoma,Arial,sans-serif;
+      background:#f4f8fb;
+      color:#243746;
+      text-align:center;
+    }
+
+    .header{
+      background:linear-gradient(135deg,#123c69,#1f6f8b);
+      color:white;
+      padding:28px 15px;
+    }
+
+    .header h1{
+      margin:0 0 8px;
+      font-size:27px;
+    }
+
+    .header p{
+      margin:0;
+      font-size:15px;
+    }
+
+    .container{
+      max-width:650px;
+      margin:20px auto;
+      padding:0 15px 30px;
+    }
+
+    .card{
+      background:white;
+      border-radius:18px;
+      padding:20px;
+      margin-bottom:15px;
+      box-shadow:0 4px 15px rgba(0,0,0,.08);
+    }
+
+    .name{
+      font-size:24px;
+      font-weight:bold;
+      color:#123c69;
+    }
+
+    .points{
+      font-size:36px;
+      font-weight:bold;
+      margin:10px 0;
+      color:#1f6f8b;
+    }
+
+    .level{
+      display:inline-block;
+      padding:8px 18px;
+      border-radius:20px;
+      background:#eef7fa;
+      font-weight:bold;
+    }
+
+    .stamps{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:15px;
+    }
+
+    .stamp{
+      border-radius:14px;
+      padding:14px 8px;
+      background:#f7f7f7;
+      font-weight:bold;
+    }
+
+    .history{
+      text-align:right;
+      line-height:1.9;
+    }
+
+    .history-item{
+      background:#f7fafc;
+      padding:9px 12px;
+      border-radius:10px;
+      margin:7px 0;
+    }
+
+    .achievement{
+      font-size:18px;
+      font-weight:bold;
+      line-height:1.8;
+    }
+
+    .loading{
+      padding:50px 20px;
+      font-size:18px;
+    }
+
+    .footer{
+      color:#6b7c87;
+      font-size:13px;
+      padding:10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>⚛️ فيزياء 360°</h1>
+    <p>👨‍👩‍👧 متابعة ولي الأمر</p>
+  </div>
+
+  <div class="container" id="app">
+    <div class="loading">جاري تحميل بيانات الطالبة...</div>
+  </div>
+
+  <div class="footer">
+    إعداد المعلمة دلال عسيري
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAI6d40bdSpLd87gRPYrkNYDf5vnHUKeVw",
+      authDomain: "physics360-25dba.firebaseapp.com",
+      projectId: "physics360-25dba",
+      storageBucket: "physics360-25dba.firebasestorage.app",
+      messagingSenderId: "465379336660",
+      appId: "1:465379336660:web:5ce7c0f1c2f021692f3641"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const id = new URLSearchParams(location.search).get('id');
+    const app = document.getElementById('app');
+
+    function getLevel(points){
+      if(points >= 150) return 'خبيرة فيزياء 360°';
+      if(points >= 100) return 'خبيرة';
+      if(points >= 50) return 'متمكنة';
+      return 'مستكشفة الفيزياء';
+    }
+
+    function achievement(points){
+      if(points >= 150){
+        return '👑 البطاقة الذهبية<br>وصلت الطالبة إلى 150 نقطة 🌟';
+      }
+      if(points >= 100){
+        return '💎 بطاقة الإبداع<br>وصلت الطالبة إلى 100 نقطة 🎉';
+      }
+      if(points >= 50){
+        return '⭐ بطاقة التميز<br>وصلت الطالبة إلى 50 نقطة 🎉';
+      }
+      return '🔒 أول بطاقة امتياز عند الوصول إلى 50 نقطة';
+    }
+
+    async function loadStudent(){
+      if(!id){
+        app.innerHTML =
+          '<div class="card">⚠️ رابط المتابعة غير مكتمل.</div>';
+        return;
+      }
+
+      try{
+        const doc = await db.collection('students').doc(id).get();
+
+        if(!doc.exists){
+          app.innerHTML =
+            '<div class="card">لم يتم العثور على بيانات الطالبة.</div>';
+          return;
+        }
+
+        const d = doc.data();
+
+        const a = Number(d.a || 0);
+        const b = Number(d.b || 0);
+        const c = Number(d.c || 0);
+        const e = Number(d.d || 0);
+
+        const points = (a + b + c + e) * 5;
+        const history = Array.isArray(d.history) ? d.history : [];
+
+        let historyHTML = '';
+
+        if(history.length){
+          historyHTML = history.slice().reverse().map(item => {
+            let text = '';
+
+            if(typeof item === 'string'){
+              text = item;
+            }else if(item && typeof item === 'object'){
+              text = item.label || item.text || item.name || 'إنجاز مسجل';
+            }
+
+            return `<div class="history-item">🏅 ${text}</div>`;
+          }).join('');
+        }else{
+          historyHTML =
+            '<div class="history-item">لا توجد إنجازات مسجلة حتى الآن.</div>';
+        }
+
+        app.innerHTML = `
+          <div class="card">
+            <div class="name">${d.name || 'الطالبة'}</div>
+            <p>الشعبة: ${d.section || '-'}</p>
+
+            <div class="points">${points} نقطة</div>
+            <div class="level">🌟 ${getLevel(points)}</div>
+          </div>
+
+          <div class="card">
+            <h3>🏅 أختام فيزياء 360°</h3>
+
+            <div class="stamps">
+              <div class="stamp">🔵 أتقنتها<br>${a}</div>
+              <div class="stamp">🟣 اكتشفتها<br>${b}</div>
+              <div class="stamp">🟢 طبقتها<br>${c}</div>
+              <div class="stamp">🟠 ابتكرتها<br>${e}</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>✨ بطاقة الامتياز</h3>
+            <div class="achievement">
+              ${achievement(points)}
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>📋 سجل الإنجازات</h3>
+            <div class="history">
+              ${historyHTML}
+            </div>
+          </div>
+
+          <div class="card">
+            💙 شكرًا لمتابعتكم ودعمكم المستمر لتقدم الطالبة.
+          </div>
+        `;
+      }catch(error){
+        console.error(error);
+        app.innerHTML =
+          '<div class="card">⚠️ تعذر تحميل البيانات، يرجى المحاولة مرة أخرى.</div>';
+      }
+    }
+
+    loadStudent();
+  </script>
+
+</body>
+</html>

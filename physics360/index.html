@@ -287,7 +287,8 @@ footer{margin-top:30px;text-align:center;color:#789;font-size:13px}
           <option value="3">الشعبة الثالثة</option>
         </select>
         <button class="action init-btn" onclick="initializeStudents()">تهيئة/مزامنة الطالبات</button>
-       <button class="action secondary" onclick="copyAllParentLinks()">👨‍👩‍👧 نسخ روابط أولياء أمور الشعبة</button> 
+       <button class="action secondary" onclick="copyAllParentLinks()">👨‍👩‍👧 نسخ روابط أولياء أمور الشعبة</button>
+       <button class="action secondary" onclick="addStudent()">➕ إضافة طالبة</button> 
       </div>
       <div class="grid">
         <div class="metric span-4"><div class="n" id="totalStudents">0</div><div>طالبات الشعبة</div></div>
@@ -583,6 +584,37 @@ function copyParentLink(id){
   navigator.clipboard.writeText(text)
     .then(()=>alert(`تم نسخ روابط أولياء أمور ${rows.length} طالبة ✅`))
     .catch(()=>prompt('انسخي روابط أولياء الأمور:',text));
+}
+
+  async function addStudent(){
+  if(!teacherUser){
+    alert('سجلي دخول المعلمة أولًا.');
+    return;
+  }
+
+  const name=prompt('اكتبي اسم الطالبة:');
+  if(!name || !name.trim()) return;
+
+  const section=prompt('اكتبي رقم الشعبة: 1 أو 2 أو 3', currentSection);
+  if(!['1','2','3'].includes(String(section))) {
+    alert('رقم الشعبة غير صحيح.');
+    return;
+  }
+
+  const ref=fbDb.collection('students').doc();
+  await ref.set({
+    name:name.trim(),
+    section:String(section),
+    a:0,b:0,c:0,d:0,
+    history:[],
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  await loadStudents();
+  currentSection=String(section);
+  document.getElementById('sectionSelect').value=currentSection;
+  buildStudents();
+  alert('تمت إضافة الطالبة بنجاح ✅');
 }
 function openStudent(id){
   currentStudentId=id;

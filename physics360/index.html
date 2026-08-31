@@ -402,6 +402,7 @@ footer{margin-top:30px;text-align:center;color:#789;font-size:13px}
       <button class="stamp-btn" onclick="grantStamp('d','🟠 ابتكرتها','أبتكرها')">💡 أبتكرها<br><span class="small">🟠 ابتكرتها +5</span></button>
     </div>
     <button class="delete-stamp-btn" onclick="deleteLastStamp()">🗑️ حذف آخر ختم</button>
+    <button class="delete-stamp-btn" onclick="deleteStudent()">🗑️ حذف الطالبة</button>
     <h3>سجل إنجازات الطالبة</h3>
     <div class="history" id="studentHistory"></div>
   </div>
@@ -656,7 +657,24 @@ async function deleteLastStamp(){
   buildStudents(); openStudent(currentStudentId);
   alert('تم حذف آخر ختم وخصم 5 نقاط ✅');
 }
+async function deleteStudent(){
+  if(!teacherUser){
+    alert('سجلي دخول المعلمة أولًا.');
+    return;
+  }
 
+  const d=liveStudents[currentStudentId];
+  if(!d)return;
+
+  if(!confirm('هل أنتِ متأكدة من حذف الطالبة:\n'+d.name+'؟'))return;
+
+  await fbDb.collection('students').doc(currentStudentId).delete();
+  delete liveStudents[currentStudentId];
+  closeStudent();
+  buildStudents();
+
+  alert('تم حذف الطالبة بنجاح ✅');
+}
 function renderHistory(){
   const d=liveStudents[currentStudentId];
   const h=d && Array.isArray(d.history)?d.history:[];

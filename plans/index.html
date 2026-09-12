@@ -164,7 +164,7 @@ function saveGroupPlan(){
 
  let meta={id:groupId,cls:activeSection,week:groupWeek.value,skill:groupSkill.value.trim(),type:groupType.value,note:groupNote.value,names,updatedAt:now};
  let gi=data.groupPlans.findIndex(x=>x.id===groupId);if(gi>=0)data.groupPlans[gi]=meta;else data.groupPlans.push(meta);
- window.editingGroupId=null;saveData();renderRoster();renderGroupPlans();alert(groupType.value==='إثرائية'?'تم حفظ المجموعة الإثرائية ✅':'تم حفظ الخطة الجماعية ✅')
+ window.editingGroupId=null;persist();renderRoster();renderGroupPlans();alert(groupType.value==='إثرائية'?'تم حفظ المجموعة الإثرائية ✅':'تم حفظ الخطة الجماعية ✅')
 }
 function editGroupPlan(id){
  data.groupPlans=data.groupPlans||[];let gp=data.groupPlans.find(x=>x.id===id);if(!gp)return;

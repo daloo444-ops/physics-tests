@@ -60,20 +60,43 @@ let activeSection='1',currentPage=0;const pageOrder=['home','distribution','plan
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');function persist(){localStorage.setItem('dalalPhysics3',JSON.stringify(data));updateStats();cloudSave()}
 function showPage(id){currentPage=pageOrder.indexOf(id);document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===id));progressBar.style.width=((currentPage+1)/pageOrder.length*100)+'%';prevBtn.disabled=currentPage===0;nextBtn.disabled=currentPage===pageOrder.length-1;window.scrollTo({top:0,behavior:'smooth'})}document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>showPage(b.dataset.page));function movePage(d){let n=Math.max(0,Math.min(pageOrder.length-1,currentPage+d));showPage(pageOrder[n])}
 function weekAttachments(w){data.weeks[w]=data.weeks[w]||{};data.weeks[w].attachments=data.weeks[w].attachments||[];return data.weeks[w].attachments}
-function renderWeeks(){weeks.innerHTML=dist.map(([w,t])=>{let d=data.weeks[w]||{},df=PLAN_DEFAULTS[w]||['',''];let rem=d.remedial??df[0],enr=d.enrichment??df[1],pre=d.pre??'اختبار قبلي قصير (3–5 أسئلة) لتحديد المفاهيم والمهارات غير المتقنة.',post=d.post??'اختبار بعدي قصير مماثل للقبلي مع مقارنة النتيجة وتسجيل مقدار التحسن.';return `<div class="card week ${d.done?'done':''}"><span class="badge">الأسبوع ${w}</span><h3>${esc(t)}</h3><label>🩺 الخطة العلاجية</label><textarea data-w="${w}" data-k="remedial">${esc(rem)}</textarea><label>⭐ الخطة الإثرائية</label><textarea data-w="${w}" data-k="enrichment">${esc(enr)}</textarea><div class="row"><div><label>القياس القبلي / التشخيص</label><textarea data-w="${w}" data-k="pre">${esc(pre)}</textarea></div><div><label>القياس البعدي / قياس الأثر</label><textarea data-w="${w}" data-k="post">${esc(post)}</textarea></div></div><label>ملاحظات المعلمة</label><textarea data-w="${w}" data-k="note">${esc(d.note||'')}</textarea><div class="week-files"><b>📎 مرفقات الأسبوع — ارفعي الشاهد مرة واحدة فقط</b><div class="teacher-only block"><div class="row"><select id="type${w}"><option>صورة تنفيذ</option><option>اختبار قبلي</option><option>اختبار بعدي</option><option>ورقة عمل</option><option>نشاط علاجي</option><option>نشاط إثرائي</option><option>قياس أثر</option><option>مرفق إضافي</option></select><input id="title${w}" placeholder="وصف مختصر للشاهد"></div><input id="file${w}" type="file" accept="image/*,.pdf"><div class="actions"><button class="btn attach-btn" onclick="uploadEvidence('${w}')">📷 رفع وحفظ الشاهد</button></div></div><div class="evidence-grid">${renderWeekEvidence(w)}</div></div><div class="actions"><button class="btn save" onclick="saveWeek('${w}')">💾 حفظ الأسبوع</button><button class="btn" onclick="toggleDone('${w}')">${d.done?'✓ تم التنفيذ':'☐ تعليم كمنفذ'}</button></div></div>`}).join('')}
+function renderWeeks(){weeks.innerHTML=dist.map(([w,t])=>{let d=data.weeks[w]||{},df=PLAN_DEFAULTS[w]||['',''];let rem=d.remedial??df[0],enr=d.enrichment??df[1],pre=d.pre??'اختبار قبلي قصير (3–5 أسئلة) لتحديد المفاهيم والمهارات غير المتقنة.',post=d.post??'اختبار بعدي قصير مماثل للقبلي مع مقارنة النتيجة وتسجيل مقدار التحسن.';return `<div class="card week ${d.done?'done':''}"><span class="badge">الأسبوع ${w}</span><h3>${esc(t)}</h3><label>🩺 الخطة العلاجية</label><textarea data-w="${w}" data-k="remedial">${esc(rem)}</textarea><label>⭐ الخطة الإثرائية</label><textarea data-w="${w}" data-k="enrichment">${esc(enr)}</textarea><div class="row"><div><label>القياس القبلي / التشخيص</label><textarea data-w="${w}" data-k="pre">${esc(pre)}</textarea></div><div><label>القياس البعدي / قياس الأثر</label><textarea data-w="${w}" data-k="post">${esc(post)}</textarea></div></div><label>ملاحظات المعلمة</label><textarea data-w="${w}" data-k="note">${esc(d.note||'')}</textarea><div class="week-files"><b>📎 مرفقات الأسبوع — ارفعي الشاهد مرة واحدة فقط</b><div class="teacher-only block"><div class="row"><select id="type${w}"><option>صورة تنفيذ</option><option>اختبار قبلي</option><option>اختبار بعدي</option><option>ورقة عمل</option><option>نشاط علاجي</option><option>نشاط إثرائي</option><option>قياس أثر</option><option>مرفق إضافي</option></select><input id="title${w}" placeholder="وصف مختصر للشاهد"></div><input id="file${w}" type="file" accept="image/*,.pdf" multiple><div class="actions"><button class="btn attach-btn" onclick="uploadEvidence('${w}')">📷 رفع وحفظ الشاهد</button></div></div><div class="evidence-grid">${renderWeekEvidence(w)}</div></div><div class="actions"><button class="btn save" onclick="saveWeek('${w}')">💾 حفظ الأسبوع</button><button class="btn" onclick="toggleDone('${w}')">${d.done?'✓ تم التنفيذ':'☐ تعليم كمنفذ'}</button></div></div>`}).join('')}
 function renderWeekEvidence(w){return weekAttachments(w).map((e,i)=>`<div class="ev-card">${e.url&&e.mime?.startsWith('image/')?`<a href="${esc(e.url)}" target="_blank"><img src="${esc(e.url)}"></a>`:''}<b>${esc(e.type)}</b><div class="small">${esc(e.title||e.name)}</div>${e.url?`<a href="${esc(e.url)}" target="_blank">فتح الشاهد</a>`:''}<div class="teacher-only"><button class="btn danger" onclick="deleteEvidence('${w}',${i})">🗑️ حذف الشاهد</button></div></div>`).join('')||'<span class="small">لا توجد مرفقات بعد.</span>'}
 function saveWeek(w){data.weeks[w]=data.weeks[w]||{};document.querySelectorAll(`[data-w="${w}"]`).forEach(el=>data.weeks[w][el.dataset.k]=el.value);persist();renderWeeks()}function toggleDone(w){saveWeek(w);data.weeks[w].done=!data.weeks[w].done;persist();renderWeeks()}
 async function uploadEvidence(w){
-const f=document.getElementById('file'+w).files[0];if(!f){alert('اختاري صورة أو ملفًا أولًا');return}
+const input=document.getElementById('file'+w),files=Array.from(input.files||[]);
+if(!files.length){alert('اختاري صورة أو ملفًا أولًا');return}
 if(!fbAuth.currentUser||fbAuth.currentUser.email!=='daloo444@gmail.com'){alert('سجلي دخول المعلمة من الصفحة الرئيسية أولًا.');return}
-const btn=event?.target;if(btn){btn.disabled=true;btn.textContent='جارٍ الرفع...'}
-try{const form=new FormData();form.append('file',f);form.append('upload_preset','physics_plans_evidence');form.append('folder','physics_plans/evidence');
-const res=await fetch('https://api.cloudinary.com/v1_1/a9gk93go/auto/upload',{method:'POST',body:form});const r=await res.json();
-if(!res.ok||!r.secure_url)throw new Error(r?.error?.message||'تعذر رفع الملف');
-weekAttachments(w).push({type:document.getElementById('type'+w).value,title:document.getElementById('title'+w).value,name:f.name,mime:f.type,url:r.secure_url,cloudinaryPublicId:r.public_id||'',createdAt:new Date().toISOString()});
-persist();renderWeeks();renderEvidence();alert('تم حفظ الشاهد بنجاح ✅')
-}catch(e){alert('تعذر رفع الشاهد إلى Cloudinary.\n'+e.message)}
-finally{if(btn){btn.disabled=false;btn.textContent='📷 رفع وحفظ الشاهد'}}
+const btn=event?.target;if(btn){btn.disabled=true;btn.textContent=`جارٍ رفع ${files.length} مرفق...`}
+let uploaded=0,failed=0;
+try{
+ for(const f of files){
+  try{
+   const form=new FormData();
+   form.append('file',f);
+   form.append('upload_preset','physics_plans_evidence');
+   form.append('folder','physics_plans/evidence');
+   const res=await fetch('https://api.cloudinary.com/v1_1/a9gk93go/auto/upload',{method:'POST',body:form});
+   const r=await res.json();
+   if(!res.ok||!r.secure_url)throw new Error(r?.error?.message||'تعذر رفع الملف');
+   weekAttachments(w).push({
+    type:document.getElementById('type'+w).value,
+    title:document.getElementById('title'+w).value,
+    name:f.name,mime:f.type,url:r.secure_url,
+    cloudinaryPublicId:r.public_id||'',
+    createdAt:new Date().toISOString()
+   });
+   uploaded++;
+  }catch(e){failed++}
+ }
+ persist();renderWeeks();renderEvidence();
+ if(failed) alert(`تم رفع ${uploaded} مرفق ✅ وتعذر رفع ${failed} مرفق`);
+ else alert(`تم رفع وحفظ ${uploaded} مرفق بنجاح ✅`);
+}catch(e){
+ alert('تعذر رفع المرفقات.\n'+e.message)
+}finally{
+ if(btn){btn.disabled=false;btn.textContent='📷 رفع وحفظ الشاهد'}
+}
 }
 async function deleteEvidence(w,i){
 if(!fbAuth.currentUser||fbAuth.currentUser.email!=='daloo444@gmail.com'){alert('الحذف متاح للمعلمة فقط بعد تسجيل الدخول بحساب Google.');return}

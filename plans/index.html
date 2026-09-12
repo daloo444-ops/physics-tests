@@ -16,7 +16,7 @@
 <div id="rosterList"></div>
 <hr>
 <h3>🩺 خطة جماعية سريعة</h3>
-<div class="row"><div><label>الأسبوع / الدرس</label><select id="groupWeek" onchange="loadReadyAssessment()"></select></div><div><label>نوع الخطة</label><select id="groupType" onchange="loadReadyAssessment()"><option>علاجية</option><option>إثرائية</option></select></div></div>
+<div class="row"><div><label>الأسبوع / الدرس</label><select id="groupWeek" onchange="loadReadyAssessment()"></select></div><div><label>نوع الخطة</label><select id="groupType" onchange="loadReadyAssessment();renderSelectedScores()"><option>علاجية</option><option>إثرائية</option></select></div></div>
 <label>الدرس / المهارة</label><input id="groupSkill" placeholder="يُعبأ تلقائيًا ويمكن تعديله">
 <div id="readyAssessment" class="assessment-box"></div>
 <label>ملاحظات / وصف مختصر للخطة</label><textarea id="groupNote" placeholder="اختياري"></textarea>
@@ -109,6 +109,15 @@ function selectVisibleStudents(on){document.querySelectorAll('.student-pick').fo
 function renderSelectedScores(prefill={}){
  const names=selectedStudentNames();
  sectionSummary.textContent=`عدد طالبات الشعبة: ${(data.rosters[activeSection]||[]).length} • المحددات الآن: ${names.length}`;
+
+ if(groupType.value==='إثرائية'){
+   selectedScores.innerHTML=names.length
+     ? `<h4>الطالبات المختارات (${names.length})</h4>`+
+       names.map(n=>`<div class="score-row selected-member" data-student="${esc(n)}"><b>${esc(n)}</b><span class="small">⭐ ضمن المجموعة الإثرائية</span></div>`).join('')
+     : '<p class="small">حددي الطالبات من القائمة أعلاه أولًا.</p>';
+   return;
+ }
+
  selectedScores.innerHTML=names.length?`<h4>درجات المجموعة (${names.length})</h4>`+names.map(n=>{
    let v=prefill[n]||{};
    return `<div class="score-row" data-student="${esc(n)}"><b>${esc(n)}</b><input class="gpre" type="number" min="0" max="100" placeholder="قبلي %" value="${esc(v.pre??'')}"><input class="gpost" type="number" min="0" max="100" placeholder="بعدي %" value="${esc(v.post??'')}"><span class="small growth">${v.pre!==''&&v.post!==''&&v.pre!=null&&v.post!=null?'التحسن '+((+v.post)-(+v.pre)).toFixed(0)+'%':'البعدي لاحقًا'}</span></div>`
@@ -116,18 +125,26 @@ function renderSelectedScores(prefill={}){
  document.querySelectorAll('#selectedScores input').forEach(x=>x.oninput=()=>{let r=x.closest('.score-row'),a=r.querySelector('.gpre').value,b=r.querySelector('.gpost').value;r.querySelector('.growth').textContent=(a!==''&&b!=='')?'التحسن '+(+b-+a).toFixed(0)+'%':'البعدي لاحقًا'})
 }
 function saveGroupPlan(){
- const rows=[...document.querySelectorAll('#selectedScores .score-row')];if(!rows.length){alert('حددي طالبة واحدة على الأقل');return}
+ const names=selectedStudentNames();
+ if(!names.length){alert('حددي طالبة واحدة على الأقل');return}
  if(!groupSkill.value.trim()){alert('اكتبي الدرس أو المهارة');return}
- const groupId=window.editingGroupId||('g'+Date.now()),now=new Date().toISOString(),names=[];
- rows.forEach(r=>{const name=r.dataset.student,pre=r.querySelector('.gpre').value,post=r.querySelector('.gpost').value;names.push(name);
+
+ const groupId=window.editingGroupId||('g'+Date.now()),now=new Date().toISOString();
+
+ names.forEach(name=>{
+   let pre='',post='';
+   if(groupType.value!=='إثرائية'){
+     const r=[...document.querySelectorAll('#selectedScores .score-row')].find(x=>x.dataset.student===name);
+     if(r){pre=r.querySelector('.gpre')?.value||'';post=r.querySelector('.gpost')?.value||''}
+   }
    let old=data.students.find(x=>x.groupId===groupId&&x.name===name);
    let rec={name,cls:activeSection,skill:groupSkill.value.trim(),type:groupType.value,pre,post,note:groupNote.value,groupId,updatedAt:now};
    if(old)Object.assign(old,rec);else data.students.push(rec)
  });
- data.groupPlans=data.groupPlans||[];let gp=data.groupPlans.find(x=>x.id===groupId);
+
  let meta={id:groupId,cls:activeSection,week:groupWeek.value,skill:groupSkill.value.trim(),type:groupType.value,note:groupNote.value,names,updatedAt:now};
- if(gp)Object.assign(gp,meta);else data.groupPlans.push(meta);
- persist();window.editingGroupId=null;clearGroupForm();renderRoster();renderGroupPlans();calcImpact();alert('تم حفظ خطة المجموعة ✅')
+ let gi=data.groupPlans.findIndex(x=>x.id===groupId);if(gi>=0)data.groupPlans[gi]=meta;else data.groupPlans.push(meta);
+ window.editingGroupId=null;saveData();renderRoster();renderGroupPlans();alert(groupType.value==='إثرائية'?'تم حفظ المجموعة الإثرائية ✅':'تم حفظ الخطة الجماعية ✅')
 }
 function editGroupPlan(id){
  data.groupPlans=data.groupPlans||[];let gp=data.groupPlans.find(x=>x.id===id);if(!gp)return;

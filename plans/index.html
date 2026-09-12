@@ -67,12 +67,19 @@ function initGroupWeek(){
  groupWeek.innerHTML=dist.map(x=>`<option value="${x[0]}">الأسبوع ${x[0]} — ${esc(x[1])}</option>`).join('');
  loadReadyAssessment()
 }
+
+function toggleGroupScores(){
+  const block=document.getElementById('groupScoresBlock');
+  if(block) block.style.display=(window.groupType && groupType.value==='إثرائية')?'none':'block';
+}
+
 function loadReadyAssessment(){
  if(!window.groupWeek||!window.readyAssessment)return;
  const w=groupWeek.value||'1', a=READY_ASSESSMENTS[w], topic=(dist.find(x=>x[0]===w)||[])[1]||'';
  if(!groupSkill.value||groupSkill.dataset.auto==='1'){groupSkill.value=topic;groupSkill.dataset.auto='1'}
  groupSkill.oninput=()=>groupSkill.dataset.auto='0';
  if(!a)return;
+ toggleGroupScores();
  if(groupType.value==='إثرائية'){
    readyAssessment.innerHTML=`<h4>⭐ المهمة الإثرائية الجاهزة — مرة واحدة للمجموعة</h4><div class="enrich-box">${esc(a[5])}</div><p class="small">اختاري الطالبات المتقنات مرة واحدة، نفذي المهمة كمجموعة، ويكفي شاهد واحد أو نماذج مختارة من العمل.</p>`;
  }else{
@@ -95,7 +102,7 @@ function renderRoster(){
  rosterList.innerHTML=names.map(n=>{
    let rs=data.students.filter(x=>x.name===n&&String(x.cls)===activeSection),r=rs[rs.length-1];
    return `<div class="student-card"><input class="student-pick teacher-only" type="checkbox" value="${esc(n)}" onchange="renderSelectedScores()"><b>${esc(n)}</b><span>${r?esc(r.type):'بدون خطة'}</span><span>${r&&r.post!==''&&r.post!=null?`${r.pre||'—'} ← ${r.post}`:(r?`قبلي ${r.pre||'—'}`:'—')}</span></div>`
- }).join('');
+ }).join('')+`</div>`;
  renderSelectedScores()
 }
 function selectVisibleStudents(on){document.querySelectorAll('.student-pick').forEach(x=>x.checked=on);renderSelectedScores()}

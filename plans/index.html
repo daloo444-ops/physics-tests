@@ -182,7 +182,7 @@ function renderGroupPlans(){
  data.groupPlans=data.groupPlans||[];
  let a=data.groupPlans.filter(x=>String(x.cls)===activeSection).slice().reverse();
  groupPlansList.innerHTML=a.map(g=>{let rs=data.students.filter(x=>x.groupId===g.id),done=rs.filter(x=>x.post!==''&&x.post!=null).length;
- return `<div class="card plan-group"><b>${esc(g.skill)}</b> <span class="pill">${esc(g.type)}</span><div class="small">${g.names.length} طالبة • البعدي مسجل لـ ${done}/${g.names.length}</div><div class="actions teacher-only"><button class="btn" onclick="editGroupPlan('${g.id}')">✏️ فتح / إضافة البعدي</button><button class="btn danger" onclick="deleteGroupPlan('${g.id}')">🗑️ حذف</button></div></div>`}).join('')||'<p class="small">لا توجد خطط جماعية محفوظة لهذه الشعبة بعد.</p>'
+ return `<div class="card plan-group"><b>${esc(g.skill)}</b> <span class="pill">${esc(g.type)}</span><div class="small">${g.type==='إثرائية' ? `${g.names.length} طالبة` : `${g.names.length} طالبة • البعدي مسجل لـ ${done}/${g.names.length}`}</div><div class="actions teacher-only"><button class="btn" onclick="editGroupPlan('${g.id}')">✏️ فتح / إضافة البعدي</button><button class="btn danger" onclick="deleteGroupPlan('${g.id}')">🗑️ حذف</button></div></div>`}).join('')||'<p class="small">لا توجد خطط جماعية محفوظة لهذه الشعبة بعد.</p>'
 }
 function clearGroupForm(){
  window.editingGroupId=null;groupSkill.value='';groupSkill.dataset.auto='1';groupNote.value='';groupType.value='علاجية';loadReadyAssessment();document.querySelectorAll('.student-pick').forEach(x=>x.checked=false);renderSelectedScores()

@@ -96,12 +96,29 @@ function setSection(s,b){
  renderRoster();renderGroupPlans()
 }
 function selectedStudentNames(){return [...document.querySelectorAll('.student-pick:checked')].map(x=>x.value)}
+
+function deleteRosterStudent(name){
+  if(!isTeacher){alert('الحذف متاح للمعلمة فقط');return}
+  if(!confirm('حذف الطالبة "'+name+'" من هذه الشعبة؟')) return;
+  const arr=data.rosters[activeSection]||[];
+  data.rosters[activeSection]=arr.filter(x=>x!==name);
+  // Remove saved follow-up records for this student in the same section.
+  data.students=(data.students||[]).filter(x=>!(x.cls===activeSection && x.name===name));
+  // Remove student from saved group plans in the same section; delete empty groups.
+  data.groupPlans=(data.groupPlans||[]).map(g=>{
+    if(g.cls===activeSection && Array.isArray(g.names)) g={...g,names:g.names.filter(x=>x!==name)};
+    return g
+  }).filter(g=>!(g.cls===activeSection && Array.isArray(g.names) && g.names.length===0));
+  saveData();renderRoster();renderGroupPlans();
+  alert('تم حذف الطالبة من الشعبة ✅');
+}
+
 function renderRoster(){
  let q=studentSearch.value.trim(),all=data.rosters[activeSection]||[],names=all.filter(n=>!q||n.includes(q));
  sectionSummary.textContent=`عدد طالبات الشعبة: ${all.length} • المحددات الآن: ${selectedStudentNames().length}`;
  rosterList.innerHTML=names.map(n=>{
    let rs=data.students.filter(x=>x.name===n&&String(x.cls)===activeSection),r=rs[rs.length-1];
-   return `<div class="student-card"><input class="student-pick teacher-only" type="checkbox" value="${esc(n)}" onchange="renderSelectedScores()"><b>${esc(n)}</b><span>${r?esc(r.type):'بدون خطة'}</span><span>${r&&r.post!==''&&r.post!=null?`${r.pre||'—'} ← ${r.post}`:(r?`قبلي ${r.pre||'—'}`:'—')}</span></div>`
+   return `<div class="student-card"><input class="student-pick teacher-only" type="checkbox" value="${esc(n)}" onchange="renderSelectedScores()"><b>${esc(n)}</b><button type="button" class="danger teacher-only" style="margin-inline-start:8px;padding:6px 10px;font-size:12px" onclick="event.stopPropagation();deleteRosterStudent('${String(n).replace(/\/g,'\\').replace(/'/g,"\'")}')">🗑️ حذف</button><span>${r?esc(r.type):'بدون خطة'}</span><span>${r&&r.post!==''&&r.post!=null?`${r.pre||'—'} ← ${r.post}`:(r?`قبلي ${r.pre||'—'}`:'—')}</span></div>`
  }).join('')+`</div>`;
  renderSelectedScores()
 }

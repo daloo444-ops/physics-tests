@@ -48,6 +48,17 @@ else db.collection('students').doc(id).get().then(doc=>{
       <div class="launch-note">${d.launchBadge?'بدأتِ رحلتك في فيزياء 360 بنجاح':'يُمنح من المعلمة بعد بداية الرحلة'}</div>
     </div>
     <div class="card metrics"><div class="metric"><b>${pts}</b>النقاط</div><div class="metric"><b style="font-size:18px">${level(pts)}</b>المستوى</div></div>
+    <div class="card">
+${pts>=150 ? `
+  <div style="font-size:18px;font-weight:800">👑 البطاقة الذهبية<br>مبروك! وصلتِ إلى 150 نقطة 🌟</div>
+` : pts>=100 ? `
+  <div style="font-size:18px;font-weight:800">💎 بطاقة الإبداع<br>مبروك! وصلتِ إلى 100 نقطة 🎉</div>
+` : pts>=50 ? `
+  <div style="font-size:18px;font-weight:800">⭐ بطاقة التميز<br>مبروك! وصلتِ إلى 50 نقطة 🎉</div>
+` : `
+  <div>🔒 أول بطاقة تفتح عند وصولكِ إلى 50 نقطة</div>
+`}
+</div>
     <div class="card"><h3>أختامي</h3><div class="stamps">
       <div class="stamp s1">🔵 أتقنتها<br>${d.a||0}</div>
       <div class="stamp s2">🟣 اكتشفتها<br>${d.b||0}</div>

@@ -740,15 +740,15 @@ function evidenceRow(d={}){
   <td><input value="${d.lesson||''}" placeholder="الدرس/النشاط"></td>
   <td><select><option>أتعلمها</option><option>أراها</option><option>أطبقها</option><option>أبتكرها</option></select></td>
   <td><input value="${d.type||''}" placeholder="صورة / عمل / نتيجة..."></td>
- <td><textarea placeholder="ملاحظات" style="width:100%;min-height:70px;white-space:normal;overflow-wrap:anywhere;resize:vertical;">${d.notes||''}</textarea></td>
+  <td><input value="${d.notes||''}" placeholder="ملاحظات"></td>`;
   tr.querySelector('select').value=d.station||'أتعلمها';
   document.querySelector('#evidenceTable tbody').appendChild(tr);
 }
 function addEvidence(){evidenceRow();}
 function saveEvidence(){
   const data=[...document.querySelectorAll('#evidenceTable tbody tr')].map(tr=>{
-    const x=tr.querySelectorAll('input'), notes=tr.querySelector('textarea'), s=tr.querySelector('select');
-    return {date:x[0].value,lesson:x[1].value,station:s.value,type:x[2].value,notes:notes.value};
+    const x=tr.querySelectorAll('input'), s=tr.querySelector('select');
+    return {date:x[0].value,lesson:x[1].value,station:s.value,type:x[2].value,notes:x[3].value};
   });
   localStorage.setItem('physics360_evidence',JSON.stringify(data));alert('تم حفظ سجل الشواهد ✅');
 }

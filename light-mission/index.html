@@ -23,7 +23,7 @@ button:hover{transform:translateY(-2px);background:#10465a}.nav{position:fixed;b
 #r2{left:52%;top:63%;width:41%;transform-origin:left center}
 .normal{display:none;position:absolute;left:55%;top:38%;height:180px;border-left:3px dashed #9ef7f1}
 .angles{display:none;position:absolute;left:57%;top:48%;font-size:22px;color:#9ef7f1}
-.small{font-size:18px;color:#b9d5df}.success{font-size:clamp(25px,3vw,44px);color:#87ffbc}
+.small{font-size:18px;color:#b9d5df}.success{font-size:clamp(25px,3vw,44px);color:#87ffbc}.hitbox{min-height:92px;margin:8px 0 78px;text-align:center}
 @media(max-width:700px){.grid{grid-template-columns:1fr}#arena{height:390px}}
 @media print{body{overflow:visible;background:white;color:black}.slide{display:block!important;min-height:auto;page-break-after:always;background:white;color:black}.nav,button{display:none}.card,#arena{border:1px solid #888;background:white}}
 
@@ -39,7 +39,7 @@ button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 
 <section class="slide"><span class="badge">المهمة 02 • أراها</span><h2>🎯 أصيبي الهدف</h2><p>دوّري المرآة حتى يصل الشعاع إلى الهدف. راقبي ماذا يحدث لمسار الضوء.</p>
 <div id="arena"><div class="source">🔦</div><div class="target">🎯</div><div id="r1" class="ray"></div><div id="r2" class="ray"></div><div id="mir" class="mirror"></div><div id="normal" class="normal"></div><div id="angles" class="angles">θᵢ = θᵣ</div></div>
-<div><button onclick="turn(-3)">↶ تدوير يسار</button><button onclick="turn(3)">تدوير يمين ↷</button><button onclick="resetMirror()">إعادة</button></div><div id="hit"></div></section>
+<div><button onclick="turn(-3)">↶ تدوير يسار</button><button onclick="turn(3)">تدوير يمين ↷</button><button onclick="resetMirror()">إعادة</button></div><div id="hit" class="hitbox"></div></section>
 
 <section class="slide"><span class="badge">اكتشاف القانون</span><h2>🪞 ماذا اكتشفنا؟</h2><div class="card"><p>عند نقطة سقوط الشعاع نرسم <b class="glow">العمود المقام</b> عموديًا على سطح المرآة.</p><p>نقيس الزاويتين بالنسبة إلى العمود المقام، وليس بالنسبة إلى سطح المرآة.</p><h2 class="glow">زاوية السقوط = زاوية الانعكاس</h2><p>θᵢ = θᵣ</p></div></section>
 
@@ -63,7 +63,8 @@ function next(){go(idx+1)} function prev(){go(idx-1)}
 function wrong(b){b.textContent='حاولي مرة أخرى ✦';setTimeout(()=>location.reload?b.textContent=b.dataset.old||b.textContent:null,700)}
 function okQuiz(){document.getElementById('qmsg').innerHTML='<span class="success">تم فك الشفرة: الانعكاس ✨</span>';setTimeout(()=>go(2),900)}
 function turn(d){ang+=d; if(ang>12)ang=12;if(ang<-30)ang=-30; document.getElementById('mir').style.transform=`rotate(${ang}deg)`; let out=-38-2*ang; document.getElementById('r2').style.transform=`rotate(${out}deg)`; if(ang>=-3&&ang<=3){hit()}}
-function hit(){document.getElementById('hit').innerHTML='<span class="success">🎯 أُصيب الهدف! الآن لاحظي العمود المقام والزاويتين.</span>';document.getElementById('normal').style.display='block';document.getElementById('angles').style.display='block'}
+function hit(){document.getElementById('hit').innerHTML='<div class="success">🎯 أحسنتِ! أصبتِ الهدف</div><button onclick="revealSecret()">🔍 اكشفي سر الانعكاس</button>'}
+function revealSecret(){let n=document.getElementById('normal'),a=document.getElementById('angles'),h=document.getElementById('hit');n.style.display='block';a.style.display='none';h.innerHTML='<div class="success">① ظهر العمود المقام… راقبي الزاويتين 👀</div>';setTimeout(()=>{a.style.display='block';a.textContent='θᵢ   ↔   θᵣ';h.innerHTML='<div class="success">② زاوية السقوط وزاوية الانعكاس تُقاسان من العمود المقام</div>'},700);setTimeout(()=>{a.textContent='θᵢ = θᵣ';h.innerHTML='<div class="success">✨ الاستنتاج: زاوية السقوط = زاوية الانعكاس</div>'},1500)}
 function resetMirror(){ang=-12;document.getElementById('mir').style.transform='rotate(-12deg)';document.getElementById('r2').style.transform='rotate(-14deg)';document.getElementById('normal').style.display='none';document.getElementById('angles').style.display='none';document.getElementById('hit').innerHTML=''}
 function missionOk(){document.getElementById('case').innerHTML='<span class="success">صحيح: 35° لأن θᵢ = θᵣ</span>'}
 function finalQ(x){if(x){document.getElementById('finalmsg').innerHTML='<span class="success">الرمز صحيح 🔓</span>';setTimeout(()=>go(8),900)}else document.getElementById('finalmsg').innerHTML='<span class="warn">راجعي مرجع القياس: العمود المقام أم سطح المرآة؟</span>'}

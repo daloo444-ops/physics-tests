@@ -1,1 +1,77 @@
-<!-- light mission -->
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مهمة سرّ الضوء | دلال عسيري</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#06111d;color:#f6fbff;overflow:hidden}
+.slide{display:none;min-height:100vh;padding:5vh 6vw;background:radial-gradient(circle at 25% 20%,#0d4350 0,#081c2c 34%,#050b14 75%);position:relative}
+.slide.active{display:flex;flex-direction:column;justify-content:center;align-items:center}
+h1{font-size:clamp(38px,6vw,84px);margin:.15em;text-align:center}h2{font-size:clamp(30px,4.5vw,62px);margin:.2em;text-align:center}
+p,.lead{font-size:clamp(20px,2.2vw,34px);line-height:1.7;text-align:center;max-width:1100px}
+.glow{color:#7ef8f0;text-shadow:0 0 24px #31d9d0}.warn{color:#ffd77a}
+button{font:inherit;font-weight:bold;border:1px solid #58e7df;background:#0b2e3d;color:white;border-radius:18px;padding:16px 28px;margin:8px;cursor:pointer;box-shadow:0 0 18px #0fb7ad55}
+button:hover{transform:translateY(-2px);background:#10465a}.nav{position:fixed;bottom:18px;left:0;right:0;text-align:center;z-index:5}
+.card{background:#ffffff0d;border:1px solid #ffffff25;border-radius:24px;padding:24px;max-width:1100px;width:100%;backdrop-filter:blur(8px)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;width:min(1100px,100%)}.grid button{min-height:100px}
+.badge{position:absolute;top:22px;right:28px;color:#9bece7;font-size:18px}
+#arena{position:relative;width:min(1000px,90vw);height:430px;border:1px solid #ffffff33;border-radius:24px;background:linear-gradient(#071826,#0a2230);overflow:hidden}
+.source{position:absolute;left:7%;top:70%;font-size:44px}.target{position:absolute;right:8%;top:18%;font-size:52px}
+.mirror{position:absolute;left:48%;top:56%;width:150px;height:12px;background:#d8faff;border-radius:10px;transform-origin:center;box-shadow:0 0 18px #bafcff}
+.ray{position:absolute;height:5px;background:#ffe978;transform-origin:left center;box-shadow:0 0 14px #ffe978}
+#r1{left:12%;top:76%;width:42%;transform:rotate(-17deg)}
+#r2{left:52%;top:63%;width:41%;transform-origin:left center}
+.normal{display:none;position:absolute;left:55%;top:38%;height:180px;border-left:3px dashed #9ef7f1}
+.angles{display:none;position:absolute;left:57%;top:48%;font-size:22px;color:#9ef7f1}
+.small{font-size:18px;color:#b9d5df}.success{font-size:clamp(25px,3vw,44px);color:#87ffbc}
+@media(max-width:700px){.grid{grid-template-columns:1fr}#arena{height:390px}}
+@media print{body{overflow:visible;background:white;color:black}.slide{display:block!important;min-height:auto;page-break-after:always;background:white;color:black}.nav,button{display:none}.card,#arena{border:1px solid #888;background:white}}
+
+button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+@supports (-webkit-touch-callout:none){
+  .slide{min-height:100svh;height:100svh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+}
+</style></head>
+<body>
+<section class="slide active"><span class="badge">فيزياء 360</span><div class="lead warn">🚨 بلاغ عاجل</div><h1 class="glow">مهمة سرّ الضوء 🔦</h1><p>تعطّل نظام التوجيه الضوئي. أمامكن مهمة واحدة: اكتشاف القاعدة التي تعيد الشعاع إلى هدفه.</p><p class="small">طالبات ثالث ثانوي • فيزياء 3 • المعلمة دلال عسيري</p><a href="#mission1" id="startLink" style="font:inherit;font-weight:bold;border:1px solid #58e7df;background:#0b2e3d;color:white;border-radius:18px;padding:16px 28px;margin:8px;cursor:pointer;box-shadow:0 0 18px #0fb7ad55;text-decoration:none;position:relative;z-index:30">بدء المهمة 🚀</a></section>
+
+<section class="slide" id="mission1"><span class="badge">المهمة 01</span><h2>🔐 فكّي الشفرة</h2><div class="card"><p>لماذا نستطيع رؤية صورتنا في المرآة؟</p><div class="grid"><button onclick="wrong(this)">لأن المرآة تُنتج ضوءًا</button><button onclick="okQuiz()">لأن الضوء ينعكس عن سطحها إلى أعيننا</button><button onclick="wrong(this)">لأن الضوء يتوقف عند المرآة</button><button onclick="wrong(this)">لأن المرآة تمتص كل الضوء</button></div><p id="qmsg"></p></div></section>
+
+<section class="slide"><span class="badge">المهمة 02 • أراها</span><h2>🎯 أصيبي الهدف</h2><p>دوّري المرآة حتى يصل الشعاع إلى الهدف. راقبي ماذا يحدث لمسار الضوء.</p>
+<div id="arena"><div class="source">🔦</div><div class="target">🎯</div><div id="r1" class="ray"></div><div id="r2" class="ray"></div><div id="mir" class="mirror"></div><div id="normal" class="normal"></div><div id="angles" class="angles">θᵢ = θᵣ</div></div>
+<div><button onclick="turn(-3)">↶ تدوير يسار</button><button onclick="turn(3)">تدوير يمين ↷</button><button onclick="resetMirror()">إعادة</button></div><div id="hit"></div></section>
+
+<section class="slide"><span class="badge">اكتشاف القانون</span><h2>🪞 ماذا اكتشفنا؟</h2><div class="card"><p>عند نقطة سقوط الشعاع نرسم <b class="glow">العمود المقام</b> عموديًا على سطح المرآة.</p><p>نقيس الزاويتين بالنسبة إلى العمود المقام، وليس بالنسبة إلى سطح المرآة.</p><h2 class="glow">زاوية السقوط = زاوية الانعكاس</h2><p>θᵢ = θᵣ</p></div></section>
+
+<section class="slide"><span class="badge">المهمة 03 • أطبقها</span><h2>🕵🏻‍♀️ ملف القضية</h2><p>إذا سقط شعاع بزاوية 35° مع العمود المقام، فما زاوية انعكاسه؟</p><div class="grid"><button onclick="wrong(this)">55°</button><button onclick="missionOk(this)">35° ✓</button><button onclick="wrong(this)">70°</button><button onclick="wrong(this)">25°</button></div><p id="case"></p></section>
+
+<section class="slide"><span class="badge">المهمة 04 • المختبر</span><h2>🔬 اختبري القانون</h2><div class="card"><p><b>الأدوات:</b> مرآة مستوية + كشاف/شعاع ضوئي + ورقة + منقلة.</p><p>غيّري زاوية السقوط، حددي مسار الشعاع المنعكس، ثم قارني الزاويتين. سجلي دليلًا واحدًا يؤكد القانون.</p><p class="warn">سلامة: لا يوجّه أي شعاع ضوئي نحو العين.</p></div></section>
+
+<section class="slide"><span class="badge">المهمة 05 • أتعلمها</span><h2>🤖 استدعاء فيزيو Bot</h2><div class="card"><p>قبل سؤال البوت، صوغي تفسيرك أنتِ:</p><p class="glow">«لماذا لا نقيس زاوية السقوط من سطح المرآة؟»</p><p>بعد إجابة المجموعة يمكن استخدام فيزيو Bot للتحقق والمقارنة عند توفر الإنترنت.</p></div></section>
+
+<section class="slide"><span class="badge">المهمة 06 • أبتكرها</span><h2>🏗️ مهندسات وطن الرؤية</h2><div class="card"><p>يوجد حساس ضوئي خلف عائق، ولا يمكن تحريك مصدر الضوء.</p><p><b>التحدي:</b> صممن مسارًا باستخدام مرآة أو أكثر لإيصال الضوء إلى الحساس، وحددن العمود المقام عند كل انعكاس.</p><p class="small">تفكير أعلى • STEM • تصميم → اختبار → تحسين</p></div></section>
+
+<section class="slide"><span class="badge">التحقق النهائي</span><h2>🔓 رمز استعادة النظام</h2><div class="grid"><button onclick="finalQ(0)">زاوية الانعكاس تُقاس من سطح المرآة</button><button onclick="finalQ(1)">زاوية الانعكاس تُقاس من العمود المقام</button></div><p id="finalmsg"></p></section>
+
+<section class="slide"><h1 class="glow">✅ تمت استعادة نظام الضوء</h1><p class="success">المهمة أُنجزت بنجاح بواسطة طالبات فيزياء 360</p><p>اليوم لم نحفظ قانون الانعكاس… بل اكتشفناه واختبرناه وطبقناه.</p><p class="small">المعلمة دلال عسيري</p><button onclick="go(0)">إعادة المهمة ↻</button></section>
+
+<div class="nav"><button onclick="prev()">السابق</button><button onclick="next()">التالي</button></div>
+<script>
+let idx=0, ang=-12; const slides=[...document.querySelectorAll('.slide')];
+function go(n){idx=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,i)=>s.classList.toggle('active',i===idx))}
+function next(){go(idx+1)} function prev(){go(idx-1)}
+function wrong(b){b.textContent='حاولي مرة أخرى ✦';setTimeout(()=>location.reload?b.textContent=b.dataset.old||b.textContent:null,700)}
+function okQuiz(){document.getElementById('qmsg').innerHTML='<span class="success">تم فك الشفرة: الانعكاس ✨</span>';setTimeout(()=>go(2),900)}
+function turn(d){ang+=d; if(ang>12)ang=12;if(ang<-30)ang=-30; document.getElementById('mir').style.transform=`rotate(${ang}deg)`; let out=-38-2*ang; document.getElementById('r2').style.transform=`rotate(${out}deg)`; if(ang>=-3&&ang<=3){hit()}}
+function hit(){document.getElementById('hit').innerHTML='<span class="success">🎯 أُصيب الهدف! الآن لاحظي العمود المقام والزاويتين.</span>';document.getElementById('normal').style.display='block';document.getElementById('angles').style.display='block'}
+function resetMirror(){ang=-12;document.getElementById('mir').style.transform='rotate(-12deg)';document.getElementById('r2').style.transform='rotate(-14deg)';document.getElementById('normal').style.display='none';document.getElementById('angles').style.display='none';document.getElementById('hit').innerHTML=''}
+function missionOk(){document.getElementById('case').innerHTML='<span class="success">صحيح: 35° لأن θᵢ = θᵣ</span>'}
+function finalQ(x){if(x){document.getElementById('finalmsg').innerHTML='<span class="success">الرمز صحيح 🔓</span>';setTimeout(()=>go(8),900)}else document.getElementById('finalmsg').innerHTML='<span class="warn">راجعي مرجع القياس: العمود المقام أم سطح المرآة؟</span>'}
+var startLink=document.getElementById("startLink");
+if(startLink){
+  function startMission(e){ if(e) e.preventDefault(); go(1); }
+  startLink.addEventListener("click",startMission,false);
+  startLink.addEventListener("touchend",startMission,{passive:false});
+}
+document.addEventListener('keydown' ,e=>{if(e.key==='ArrowLeft')next();if(e.key==='ArrowRight')prev()}); resetMirror();
+</script></body></html>

@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>مهمة سرّ الضوء | دلال عسيري</title>
+<title>مهمة سرّ الضوء | الحصة التطبيقية | دلال عسيري</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#06111d;color:#f6fbff;overflow:hidden}
 .slide{display:none;min-height:100vh;padding:5vh 6vw;background:radial-gradient(circle at 25% 20%,#0d4350 0,#081c2c 34%,#050b14 75%);position:relative}
@@ -11,10 +11,14 @@ h1{font-size:clamp(38px,6vw,84px);margin:.15em;text-align:center}h2{font-size:cl
 p,.lead{font-size:clamp(20px,2.2vw,34px);line-height:1.7;text-align:center;max-width:1100px}
 .glow{color:#7ef8f0;text-shadow:0 0 24px #31d9d0}.warn{color:#ffd77a}
 button{font:inherit;font-weight:bold;border:1px solid #58e7df;background:#0b2e3d;color:white;border-radius:18px;padding:16px 28px;margin:8px;cursor:pointer;box-shadow:0 0 18px #0fb7ad55}
-button:hover{transform:translateY(-2px);background:#10465a}.nav{position:fixed;bottom:18px;left:0;right:0;text-align:center;z-index:5}
+button:hover{transform:translateY(-2px);background:#10465a} button:active{transform:scale(.98)}.nav{position:fixed;bottom:18px;left:0;right:0;text-align:center;z-index:5}
 .card{background:#ffffff0d;border:1px solid #ffffff25;border-radius:24px;padding:24px;max-width:1100px;width:100%;backdrop-filter:blur(8px)}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;width:min(1100px,100%)}.grid button{min-height:100px}
 .badge{position:absolute;top:22px;right:28px;color:#9bece7;font-size:18px}
+.stationbar{position:fixed;top:16px;left:18px;z-index:9;display:flex;gap:6px;direction:rtl}
+.stationdot{padding:7px 10px;border-radius:999px;border:1px solid #ffffff25;background:#071826cc;color:#8faab4;font-size:13px}
+.stationdot.on{color:#fff;border-color:#58e7df;box-shadow:0 0 14px #0fb7ad55;background:#0b2e3d}
+@media(max-width:700px){.stationbar{top:8px;left:8px;transform:scale(.82);transform-origin:left top}}
 #arena{position:relative;width:min(1000px,90vw);height:430px;border:1px solid #ffffff33;border-radius:24px;background:linear-gradient(#071826,#0a2230);overflow:hidden}
 .source{position:absolute;left:7%;top:70%;font-size:44px}.target{position:absolute;right:8%;top:18%;font-size:52px}
 .mirror{position:absolute;left:48%;top:56%;width:150px;height:12px;background:#d8faff;border-radius:10px;transform-origin:center;box-shadow:0 0 18px #bafcff}
@@ -31,13 +35,25 @@ button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 @supports (-webkit-touch-callout:none){
   .slide{min-height:100svh;height:100svh;overflow-y:auto;-webkit-overflow-scrolling:touch}
 }
+
+.presenter-note{position:fixed;bottom:82px;right:18px;z-index:8;font-size:12px;color:#7896a1;opacity:.72}
+@media(max-width:700px){.presenter-note{display:none}}
 </style></head>
 <body>
+<div class="stationbar" id="stationbar">
+<span class="stationdot" data-st="learn">أتعلمها 🧠</span>
+<span class="stationdot" data-st="see">أراها 👁️</span>
+<span class="stationdot" data-st="apply">أطبقها 🎯</span>
+<span class="stationdot" data-st="create">أبتكرها 💡</span>
+</div>
 <section class="slide active"><span class="badge">فيزياء 360</span><div class="lead warn">🚨 بلاغ عاجل</div><h1 class="glow">مهمة سرّ الضوء 🔦</h1><p>تعطّل نظام التوجيه الضوئي. أمامكن مهمة واحدة: اكتشاف القاعدة التي تعيد الشعاع إلى هدفه.</p><p class="small">طالبات ثالث ثانوي • فيزياء 3 • المعلمة دلال عسيري</p><a href="#mission1" id="startLink" style="font:inherit;font-weight:bold;border:1px solid #58e7df;background:#0b2e3d;color:white;border-radius:18px;padding:16px 28px;margin:8px;cursor:pointer;box-shadow:0 0 18px #0fb7ad55;text-decoration:none;position:relative;z-index:30">بدء المهمة 🚀</a></section>
 
 <section class="slide" id="mission1"><span class="badge">المهمة 01</span><h2>🔐 فكّي الشفرة</h2><div class="card"><p>لماذا نستطيع رؤية صورتنا في المرآة؟</p><div class="grid"><button onclick="wrong(this)">لأن المرآة تُنتج ضوءًا</button><button onclick="okQuiz()">لأن الضوء ينعكس عن سطحها إلى أعيننا</button><button onclick="wrong(this)">لأن الضوء يتوقف عند المرآة</button><button onclick="wrong(this)">لأن المرآة تمتص كل الضوء</button></div><p id="qmsg"></p></div></section>
 
-<section class="slide"><span class="badge">المهمة 02 • أراها</span><h2>🎯 أصيبي الهدف</h2><p>دوّري المرآة حتى يصل الشعاع إلى الهدف. راقبي ماذا يحدث لمسار الضوء.</p>
+<section class="slide" id="map"><span class="badge">فيزياء 360 • خريطة المهمة | 1 د</span><h2>🧭 خريطة مهمة سرّ الضوء</h2><p>أربع محطات… وفي كل محطة مفتاح يقودنا إلى سرّ الانعكاس.</p><div class="grid"><button onclick="goToId('learn')">🧠 أتعلمها<br><span class="small">أفهم الانعكاس وقانونه</span></button><button onclick="goToId('see')">👁️ أراها<br><span class="small">أشاهد وأكتشف</span></button><button onclick="goToId('apply')">🎯 أطبقها<br><span class="small">أحل وأختبر القانون</span></button><button onclick="goToId('create')">💡 أبتكرها<br><span class="small">أصمم حلًا هندسيًا</span></button></div><button onclick="next()">ابدئي الرحلة 🚀</button></section>
+<section class="slide"><span class="badge">أهداف المهمة | 1 د</span><h2>🎯 في نهاية الرحلة أستطيع أن…</h2><div class="card"><p>🔹 أفسّر انعكاس الضوء عن المرآة المستوية.</p><p>🔹 أطبّق قانون الانعكاس: <b class="glow">θᵢ = θᵣ</b>.</p><p>🔹 أحدد خصائص الصورة في المرآة المستوية.</p><p>🔹 أوظف الانعكاس في موقف واقعي وحل هندسي.</p></div></section>
+<section class="slide" id="learn" data-station="learn"><span class="badge">محطة أتعلمها 🧠 | 6 د</span><h2>ما الانعكاس؟</h2><div class="card"><p>عندما يصل الضوء إلى سطح المرآة فإنه <b class="glow">يرتد إلى الوسط نفسه</b>، وهذا يسمى انعكاس الضوء.</p><p class="warn">ما المرجع الذي نقيس منه زاويتي السقوط والانعكاس؟</p><div class="grid"><button onclick="this.innerHTML='حاولي ثانية ✦'">سطح المرآة</button><button onclick="this.innerHTML='أحسنتِ ✓ العمود المقام'">العمود المقام</button></div></div></section>
+<section class="slide" id="see" data-station="see"><span class="badge">المهمة 02 • أراها | 8 د</span><h2>🎯 أصيبي الهدف</h2><p>دوّري المرآة حتى يصل الشعاع إلى الهدف. راقبي ماذا يحدث لمسار الضوء.</p>
 <div id="arena"><div class="source">🔦</div><div class="target">🎯</div><div id="r1" class="ray"></div><div id="r2" class="ray"></div><div id="mir" class="mirror"></div><div id="normal" class="normal"></div>
 <div id="angles" class="angles">
   <span id="incArc" style="display:none;position:absolute;width:42px;height:42px;border:3px solid #7ef8f0;border-right-color:transparent;border-bottom-color:transparent;border-radius:50%;transform:rotate(8deg);left:-39px;top:-42px"></span>
@@ -47,27 +63,82 @@ button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 </div></div>
 <div><button onclick="turn(-3)">↶ تدوير يسار</button><button onclick="turn(3)">تدوير يمين ↷</button><button onclick="resetMirror()">إعادة</button></div><div id="hit" class="hitbox"></div></section>
 
-<section class="slide"><span class="badge">اكتشاف القانون</span><h2>🪞 ماذا اكتشفنا؟</h2><div class="card"><p>عند نقطة سقوط الشعاع نرسم <b class="glow">العمود المقام</b> عموديًا على سطح المرآة.</p><p>نقيس الزاويتين بالنسبة إلى العمود المقام، وليس بالنسبة إلى سطح المرآة.</p><h2 class="glow">زاوية السقوط = زاوية الانعكاس</h2><p>θᵢ = θᵣ</p></div></section>
 
-<section class="slide"><span class="badge">المهمة 03 • أطبقها</span><h2>🕵🏻‍♀️ ملف القضية</h2><p>إذا سقط شعاع بزاوية 35° مع العمود المقام، فما زاوية انعكاسه؟</p><div class="grid"><button onclick="wrong(this)">55°</button><button onclick="missionOk(this)">35° ✓</button><button onclick="wrong(this)">70°</button><button onclick="wrong(this)">25°</button></div><p id="case"></p></section>
 
-<section class="slide"><span class="badge">المهمة 04 • المختبر</span><h2>🔬 اختبري القانون</h2><div class="card"><p><b>الأدوات:</b> مرآة مستوية + كشاف/شعاع ضوئي + ورقة + منقلة.</p><p>غيّري زاوية السقوط، حددي مسار الشعاع المنعكس، ثم قارني الزاويتين. سجلي دليلًا واحدًا يؤكد القانون.</p><p class="warn">سلامة: لا يوجّه أي شعاع ضوئي نحو العين.</p></div></section>
+<section class="slide" data-station="learn"><span class="badge">محطة أتعلمها • المرآة المستوية</span><h2>🪞 بصمة الصورة</h2><div class="card"><p>خصائص الصورة في المرآة المستوية:</p><p>✓ معتدلة &nbsp; ✓ مساوية للجسم في الحجم</p><p>✓ وهمية &nbsp; ✓ بعدها خلف المرآة يساوي بعد الجسم أمامها</p><p class="warn">تحدي: لماذا لا نستطيع استقبال هذه الصورة على شاشة؟</p></div></section>
+<section class="slide" id="apply" data-station="apply"><span class="badge">المهمة 03 • أطبقها</span><h2>🕵🏻‍♀️ ملف القضية</h2><p>إذا سقط شعاع بزاوية 35° مع العمود المقام، فما زاوية انعكاسه؟</p><div class="grid"><button onclick="wrong(this)">55°</button><button onclick="missionOk(this)">35° ✓</button><button onclick="wrong(this)">70°</button><button onclick="wrong(this)">25°</button></div><p id="case"></p></section>
 
-<section class="slide"><span class="badge">المهمة 05 • أتعلمها</span><h2>🤖 استدعاء فيزيو Bot</h2><div class="card"><p>قبل سؤال البوت، صوغي تفسيرك أنتِ:</p><p class="glow">«لماذا لا نقيس زاوية السقوط من سطح المرآة؟»</p><p>بعد إجابة المجموعة يمكن استخدام فيزيو Bot للتحقق والمقارنة عند توفر الإنترنت.</p></div></section>
+<section class="slide" data-station="apply"><span class="badge">محطة أطبقها • المختبر الحقيقي | 5 د</span><h2>🔬 اختبري القانون</h2><div class="card"><p><b>الأدوات:</b> مرآة مستوية + كشاف/شعاع ضوئي + ورقة + منقلة.</p><p>غيّري زاوية السقوط، حددي مسار الشعاع المنعكس، ثم قارني الزاويتين. سجلي دليلًا واحدًا يؤكد القانون.</p><p class="warn">سلامة: لا يوجّه أي شعاع ضوئي نحو العين.</p></div></section>
 
-<section class="slide"><span class="badge">المهمة 06 • أبتكرها</span><h2>🏗️ مهندسات وطن الرؤية</h2><div class="card"><p>يوجد حساس ضوئي خلف عائق، ولا يمكن تحريك مصدر الضوء.</p><p><b>التحدي:</b> صممن مسارًا باستخدام مرآة أو أكثر لإيصال الضوء إلى الحساس، وحددن العمود المقام عند كل انعكاس.</p><p class="small">تفكير أعلى • STEM • تصميم → اختبار → تحسين</p></div></section>
 
-<section class="slide"><span class="badge">التحقق النهائي</span><h2>🔓 رمز استعادة النظام</h2><div class="grid"><button onclick="finalQ(0)">زاوية الانعكاس تُقاس من سطح المرآة</button><button onclick="finalQ(1)">زاوية الانعكاس تُقاس من العمود المقام</button></div><p id="finalmsg"></p></section>
 
+<section class="slide" data-station="create"><span class="badge">فيزياء 360 • المحطة الرابعة | 1 د</span>
+<h1 class="glow">💡 أبتكرها</h1><p>الآن انتقلنا من تطبيق القانون إلى <b>صناعة حل</b>.</p>
+<p class="small">فكري → صممي → اختبري → حسّني</p><button onclick="next()">دخول التحدي الهندسي 🚀</button></section>
+<section class="slide" id="create" data-station="create"><span class="badge">المهمة 06 • أبتكرها | 6 د</span><h2>🏗️ مهندسات وطن الرؤية</h2><div class="card"><p>يوجد حساس ضوئي خلف عائق، ولا يمكن تحريك مصدر الضوء.</p><p><b>التحدي:</b> صممن مسارًا باستخدام مرآة أو أكثر لإيصال الضوء إلى الحساس، وحددن العمود المقام عند كل انعكاس.</p><p class="small">تفكير أعلى • STEM • تصميم → اختبار → تحسين</p></div></section>
+
+<section class="slide"><span class="badge">تعلم متمايز • تفكير عليا</span><h2>🧠 اختاري مسارك</h2><div class="grid"><button>👁️ بصري: ارسمي الشعاع والعمود المقام</button><button>🔢 تحليلي: إذا θᵢ=48° فأوجدي θᵣ وفسري</button><button>💡 إبداعي: صممي استخدامًا جديدًا لمرآتين</button><button>🔥 تحدي: ماذا يحدث إذا دُوّرت المرآة وبقي الشعاع ثابتًا؟</button></div></section>
+<section class="slide" id="vlab" data-station="apply"><span class="badge">المختبر الافتراضي • 4 د</span><h2>🧪 جرّبي القانون بنفسك</h2>
+<div class="card">
+<p>حرّكي زاوية السقوط، ثم راقبي زاوية الانعكاس.</p>
+<div style="position:relative;height:270px;max-width:720px;margin:auto;border:1px solid #ffffff33;border-radius:20px;background:#071826;overflow:hidden">
+<div style="position:absolute;left:12%;right:12%;top:72%;height:7px;background:#d8faff;box-shadow:0 0 14px #bafcff"></div>
+<div style="position:absolute;left:50%;top:15%;height:58%;border-left:3px dashed #9ef7f1"></div>
+<div id="labIn" style="position:absolute;left:50%;top:72%;height:5px;width:220px;background:#7ef8f0;transform-origin:left center;box-shadow:0 0 12px #7ef8f0"></div>
+<div id="labOut" style="position:absolute;left:50%;top:72%;height:5px;width:220px;background:#ffd77a;transform-origin:left center;box-shadow:0 0 12px #ffd77a"></div>
+</div>
+<p><input id="labRange" type="range" min="10" max="70" value="35" oninput="labUpdate(this.value)" style="width:min(600px,90%)"></p>
+<p><span style="color:#7ef8f0">θᵢ = <b id="li">35°</b></span> &nbsp;&nbsp; <span style="color:#ffd77a">θᵣ = <b id="lr">35°</b></span></p>
+<button onclick="labCheck()">🔍 استنتجي العلاقة</button><p id="labMsg"></p>
+</div></section>
+
+<section class="slide" data-station="apply"><span class="badge">تقويم تكويني • 2 د</span>
+<h2>⚡ قرار في 10 ثوانٍ</h2><div class="card">
+<p>شعاع ضوئي يصنع زاوية <b>25° مع سطح المرآة</b>. ما زاوية السقوط؟</p>
+<div class="grid"><button onclick="quickCheck(this,0)">25°</button><button onclick="quickCheck(this,1)">65° ✓</button><button onclick="quickCheck(this,0)">50°</button><button onclick="quickCheck(this,0)">75°</button></div>
+<p id="quickmsg"></p><p class="small">تذكري: زاوية السقوط تُقاس من العمود المقام، والعمود المقام يصنع 90° مع المرآة.</p></div></section>
+
+<section class="slide"><span class="badge">ربط وجداني • حياة</span><h2>✨ الضوء حولنا</h2>
+<div class="card"><p>قال تعالى: <b>﴿اللَّهُ نُورُ السَّمَاوَاتِ وَالْأَرْضِ﴾</b> <span class="small">[النور: 35]</span></p>
+<p>نربط الدرس بالتأمل في الضوء بوصفه من آيات الله في الكون، مع بقاء قانون الانعكاس وصفًا فيزيائيًا لسلوك الضوء.</p>
+<p class="glow">أين ترين الانعكاس في حياتك اليومية؟ المرآة • الطريق • الأجهزة البصرية • أنظمة الاستشعار</p></div></section>
+
+<section class="slide"><span class="badge">فيزيو Bot • 3 د</span><h2>🤖 اسألي… ثم قارني</h2>
+<div class="card"><p><b>قبل البوت:</b> اكتبي تفسيرك في جملة واحدة.</p>
+<p class="glow">لماذا تُقاس زاوية السقوط من العمود المقام وليس من سطح المرآة؟</p>
+<p><b>بعد البوت:</b> قارني إجابته بإجابتك: ما الفكرة المشتركة؟ وما الذي حسّنتِه؟</p>
+<p class="small">هنا تُستخدم الأداة للتحقق والتغذية الراجعة بعد تفكير الطالبة، لا بدلًا من تفكيرها.</p></div></section>
+
+<section class="slide" data-station="apply"><span class="badge">محطة أطبقها • عمل جماعي | 4 د</span><h2>🧩 ملف المرآة الغامض</h2>
+<div class="card"><p>وضعت طالبة جسمًا على بعد <b>20 cm</b> أمام مرآة مستوية.</p>
+<div class="grid"><button onclick="groupAns(this,1)">الصورة تبعد 20 cm خلف المرآة</button><button onclick="groupAns(this,0)">الصورة تبعد 40 cm خلف المرآة</button><button onclick="groupAns(this,1)">الصورة مساوية للجسم في الحجم</button><button onclick="groupAns(this,0)">يمكن استقبال الصورة على شاشة</button></div>
+<p id="groupMsg"></p><p class="small">ناقشن السبب قبل الاختيار؛ الدرجة للتفسير لا للاختيار فقط.</p></div></section>
+<section class="slide"><span class="badge">تفكير ناقد • سؤال الحضور</span><h2>💭 ماذا لو؟</h2>
+<div class="card"><p>إذا دارت المرآة المستوية <b>10°</b> بينما بقي الشعاع الساقط ثابتًا، فبكم يتغير اتجاه الشعاع المنعكس؟</p>
+<button onclick="document.getElementById('hot').innerHTML='<span class=&quot;success&quot;>يتغير بمقدار 20° ✨ لأن دوران المرآة θ يغيّر اتجاه الشعاع المنعكس بمقدار 2θ.</span>'">اكشفي الإجابة بعد النقاش</button><p id="hot"></p></div></section>
+<section class="slide"><span class="badge">التقويم الختامي • 3 د</span><h2>🔓 اجمعي مفاتيح الضوء الثلاثة</h2>
+<div class="card"><p><b>①</b> زاوية السقوط 40°. زاوية الانعكاس؟</p>
+<div><button onclick="finalKey(this,1,1)">40°</button><button onclick="finalKey(this,0,1)">50°</button></div>
+<p><b>②</b> صورة المرآة المستوية…</p>
+<div><button onclick="finalKey(this,1,2)">وهمية ومعتدلة ومساوية للجسم</button><button onclick="finalKey(this,0,2)">حقيقية ومقلوبة</button></div>
+<p><b>③</b> المرجع الصحيح لقياس زاوية السقوط؟</p>
+<div><button onclick="finalKey(this,1,3)">العمود المقام</button><button onclick="finalKey(this,0,3)">سطح المرآة</button></div>
+<p id="finalmsg"></p></div></section>
+
+<section class="slide"><span class="badge">إغلاق الرحلة • 1 د</span><h2>🎫 تذكرة الخروج</h2>
+<div class="card"><p>في 30 ثانية اكتبي:</p><h2 class="glow">«كنت أظن… والآن عرفت…»</h2>
+<p>ثم اختاري كلمة واحدة تصف تعلمك اليوم: <b>اكتشفت • طبقت • ابتكرت</b></p></div></section>
 <section class="slide"><h1 class="glow">✅ تمت استعادة نظام الضوء</h1><p class="success">المهمة أُنجزت بنجاح بواسطة طالبات فيزياء 360</p><p>اليوم لم نحفظ قانون الانعكاس… بل اكتشفناه واختبرناه وطبقناه.</p><p class="small">المعلمة دلال عسيري</p><button onclick="go(0)">إعادة المهمة ↻</button></section>
 
-<div class="nav"><button onclick="prev()">السابق</button><button onclick="next()">التالي</button></div>
+<div class="presenter-note">← → للتنقل • الأوقات إرشادية لحصة 45–50 دقيقة</div><div class="nav"><button onclick="prev()">السابق</button><button onclick="next()">التالي</button></div>
 <script>
 let idx=0, ang=-12; const slides=[...document.querySelectorAll('.slide')];
-function go(n){idx=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,i)=>s.classList.toggle('active',i===idx))}
+function go(n){idx=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,i)=>s.classList.toggle('active',i===idx));updateStation()}
+function updateStation(){let st=slides[idx].dataset.station||'';document.querySelectorAll('.stationdot').forEach(d=>d.classList.toggle('on',d.dataset.st===st))}
 function next(){go(idx+1)} function prev(){go(idx-1)}
 function wrong(b){b.textContent='حاولي مرة أخرى ✦';setTimeout(()=>location.reload?b.textContent=b.dataset.old||b.textContent:null,700)}
-function okQuiz(){document.getElementById('qmsg').innerHTML='<span class="success">تم فك الشفرة: الانعكاس ✨</span>';setTimeout(()=>go(2),900)}
+function okQuiz(){document.getElementById('qmsg').innerHTML='<span class="success">تم فك الشفرة: الانعكاس ✨</span>';setTimeout(()=>goToId('map'),900)}
+function goToId(id){let n=slides.findIndex(s=>s.id===id);if(n>=0)go(n)}
 function turn(d){ang+=d; if(ang>12)ang=12;if(ang<-30)ang=-30; document.getElementById('mir').style.transform=`rotate(${ang}deg)`; let out=-38-2*ang; document.getElementById('r2').style.transform=`rotate(${out}deg)`; if(ang>=-3&&ang<=3){hit()}}
 function hit(){document.getElementById('hit').innerHTML='<div class="success">🎯 أحسنتِ! أصبتِ الهدف</div><button onclick="revealSecret()">🔍 اكشفي سر الانعكاس</button>'}
 function revealSecret(){
@@ -81,12 +152,19 @@ setTimeout(()=>{h.innerHTML='<div class="success">✨ الاستنتاج: زاو
 }
 function resetMirror(){ang=-12;document.getElementById('mir').style.transform='rotate(-12deg)';document.getElementById('r2').style.transform='rotate(-14deg)';document.getElementById('normal').style.display='none';document.getElementById('angles').style.display='none';['incArc','refArc','incLabel','refLabel'].forEach(id=>{let e=document.getElementById(id);if(e)e.style.display='none'});document.getElementById('hit').innerHTML=''}
 function missionOk(){document.getElementById('case').innerHTML='<span class="success">صحيح: 35° لأن θᵢ = θᵣ</span>'}
-function finalQ(x){if(x){document.getElementById('finalmsg').innerHTML='<span class="success">الرمز صحيح 🔓</span>';setTimeout(()=>go(8),900)}else document.getElementById('finalmsg').innerHTML='<span class="warn">راجعي مرجع القياس: العمود المقام أم سطح المرآة؟</span>'}
+function finalQ(x){if(x){document.getElementById('finalmsg').innerHTML='<span class="success">الرمز صحيح 🔓</span>';setTimeout(()=>go(slides.length-1),900)}else document.getElementById('finalmsg').innerHTML='<span class="warn">راجعي مرجع القياس: العمود المقام أم سطح المرآة؟</span>'}
+let finalKeys=new Set();
+function quickCheck(b,ok){document.getElementById('quickmsg').innerHTML=ok?'<span class="success">ممتاز ✓ 90° − 25° = 65°</span>':'<span class="warn">قيسي من العمود المقام، لا من سطح المرآة.</span>'}
+function finalKey(b,ok,k){if(ok){finalKeys.add(k);b.style.borderColor='#87ffbc';b.textContent=b.textContent+' ✓';if(finalKeys.size===3){document.getElementById('finalmsg').innerHTML='<span class="success">🔓 اكتملت المفاتيح الثلاثة… تم استعادة النظام!</span>';setTimeout(()=>next(),1200)}}else{document.getElementById('finalmsg').innerHTML='<span class="warn">مفتاح غير صحيح… راجعي الدليل وحاولي مجددًا.</span>'}}
+function labUpdate(v){v=Number(v);document.getElementById('li').textContent=v+'°';document.getElementById('lr').textContent=v+'°';document.getElementById('labIn').style.transform='rotate('+(180+v)+'deg)';document.getElementById('labOut').style.transform='rotate('+(360-v)+'deg)'}
+function labCheck(){document.getElementById('labMsg').innerHTML='<span class="success">مهما غيّرنا الزاوية: θᵢ = θᵣ ✓</span>'}
+function groupAns(b,ok){b.style.borderColor=ok?'#87ffbc':'#ffd77a';document.getElementById('groupMsg').innerHTML=ok?'<span class="success">صحيح ✓ الآن فسّري لماذا.</span>':'<span class="warn">راجعي خصائص الصورة ثم حاولي مجددًا.</span>'}
+labUpdate(35);
 var startLink=document.getElementById("startLink");
 if(startLink){
   function startMission(e){ if(e) e.preventDefault(); go(1); }
   startLink.addEventListener("click",startMission,false);
   startLink.addEventListener("touchend",startMission,{passive:false});
 }
-document.addEventListener('keydown' ,e=>{if(e.key==='ArrowLeft')next();if(e.key==='ArrowRight')prev()}); resetMirror();
+document.addEventListener('keydown' ,e=>{if(e.key==='ArrowLeft')next();if(e.key==='ArrowRight')prev()}); resetMirror();updateStation();
 </script></body></html>

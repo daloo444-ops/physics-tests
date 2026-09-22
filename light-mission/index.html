@@ -19,7 +19,7 @@ button:hover{transform:translateY(-2px);background:#10465a} button:active{transf
 .stationdot{padding:7px 10px;border-radius:999px;border:1px solid #ffffff25;background:#071826cc;color:#8faab4;font-size:13px}
 .stationdot.on{color:#fff;border-color:#58e7df;box-shadow:0 0 14px #0fb7ad55;background:#0b2e3d}
 @media(max-width:700px){.stationbar{top:8px;left:8px;transform:scale(.82);transform-origin:left top}}
-#arena{position:relative;width:min(1000px,90vw);height:430px;border:1px solid #ffffff33;border-radius:24px;background:linear-gradient(#071826,#0a2230);overflow:hidden}
+#arena{position:relative;width:min(1000px,90vw);height:430px;min-height:430px;flex:0 0 430px;border:1px solid #ffffff33;border-radius:24px;background:linear-gradient(#071826,#0a2230);overflow:hidden}
 .source{position:absolute;left:7%;top:70%;font-size:44px}.target{position:absolute;right:8%;top:18%;font-size:52px}
 .mirror{position:absolute;left:48%;top:56%;width:150px;height:12px;background:#d8faff;border-radius:10px;transform-origin:center;box-shadow:0 0 18px #bafcff}
 .ray{position:absolute;height:5px;background:#ffe978;transform-origin:left center;box-shadow:0 0 14px #ffe978}
@@ -28,7 +28,7 @@ button:hover{transform:translateY(-2px);background:#10465a} button:active{transf
 .normal{display:none;position:absolute;left:55%;top:38%;height:180px;border-left:3px dashed #9ef7f1}
 .angles{display:none;position:absolute;left:57%;top:48%;font-size:22px;color:#9ef7f1}
 .small{font-size:18px;color:#b9d5df}.success{font-size:clamp(25px,3vw,44px);color:#87ffbc}.hitbox{min-height:92px;margin:8px 0 78px;text-align:center}
-@media(max-width:700px){.grid{grid-template-columns:1fr}#arena{height:390px}.slide{padding-bottom:150px!important}.card{margin-bottom:18px}.nav{bottom:16px;background:linear-gradient(transparent,#06111d 38%);padding-top:28px}}
+@media(max-width:700px){.slide.active{justify-content:flex-start;padding-top:92px}.grid{grid-template-columns:1fr}#arena{height:390px!important;min-height:390px!important;flex:0 0 390px!important}.slide{padding-bottom:150px!important}.card{margin-bottom:18px}.nav{bottom:16px;background:linear-gradient(transparent,#06111d 38%);padding-top:28px}}
 @media print{body{overflow:visible;background:white;color:black}.slide{display:block!important;min-height:auto;page-break-after:always;background:white;color:black}.nav,button{display:none}.card,#arena{border:1px solid #888;background:white}}
 
 button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}

@@ -76,13 +76,18 @@ try{
    form.append('file',f);
    form.append('upload_preset','physics_plans_evidence');
    form.append('folder','physics_plans/evidence');
-   const res=await fetch('https://api.cloudinary.com/v1_1/a9gk93go/auto/upload',{method:'POST',body:form});
+   const isPdf=(f.type==='application/pdf'||/\.pdf$/i.test(f.name));
+   const endpoint=isPdf
+     ? 'https://api.cloudinary.com/v1_1/a9gk93go/raw/upload'
+     : 'https://api.cloudinary.com/v1_1/a9gk93go/auto/upload';
+   const res=await fetch(endpoint,{method:'POST',body:form});
    const r=await res.json();
    if(!res.ok||!r.secure_url)throw new Error(r?.error?.message||'تعذر رفع الملف');
    weekAttachments(w).push({
     type:document.getElementById('type'+w).value,
     title:document.getElementById('title'+w).value,
     name:f.name,mime:f.type,url:r.secure_url,
+    kind:isPdf?'pdf':'image',
     cloudinaryPublicId:r.public_id||'',
     createdAt:new Date().toISOString()
    });

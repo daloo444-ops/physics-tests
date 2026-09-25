@@ -77,6 +77,11 @@ try{
    form.append('upload_preset','physics_plans_evidence');
    form.append('folder','physics_plans/evidence');
    const isPdf=(f.type==='application/pdf'||/\.pdf$/i.test(f.name));
+   if(isPdf){
+     const safePdfId='pdf_'+Date.now()+'_'+Math.random().toString(36).slice(2,8)+'.pdf';
+     form.append('public_id',safePdfId);
+     form.append('resource_type','raw');
+   }
    const endpoint=isPdf
      ? 'https://api.cloudinary.com/v1_1/a9gk93go/raw/upload'
      : 'https://api.cloudinary.com/v1_1/a9gk93go/auto/upload';
@@ -108,7 +113,22 @@ if(!fbAuth.currentUser||fbAuth.currentUser.email!=='daloo444@gmail.com'){alert('
 if(!confirm('هل تريدين حذف هذا الشاهد من سجل الملف؟'))return;
 weekAttachments(w).splice(i,1);persist();renderWeeks();renderEvidence();alert('تم حذف الشاهد من سجل الملف ✅')
 }
-function allEvidence(){let a=[];dist.forEach(([w,t])=>weekAttachments(w).forEach((e,i)=>a.push({...e,w,topic:t,i})));return a}function renderEvidence(){const wf=evWeekFilter.value,tf=evTypeFilter.value;let a=allEvidence().filter(e=>(!wf||e.w===wf)&&(!tf||e.type===tf));evidenceList.innerHTML=a.map(e=>`<div class="ev-card">${e.url&&e.mime?.startsWith('image/')?`<a href="${esc(e.url)}" target="_blank"><img src="${esc(e.url)}"></a>`:''}<span class="badge">الأسبوع ${e.w}</span><h4>${esc(e.type)}</h4><div>${esc(e.title||e.name)}</div><div class="small">${esc(e.topic)}</div>${e.url?`<a href="${esc(e.url)}" target="_blank">👁️ فتح الشاهد</a>`:''}<div class="teacher-only"><button class="btn danger" onclick="deleteEvidence('${e.w}',${e.i})">🗑️ حذف الشاهد</button></div></div>`).join('')||'<p class="small">لا توجد شواهد مطابقة.</p>'}
+function allEvidence(){let a=[];dist.forEach(([w,t])=>weekAttachments(w).forEach((e,i)=>a.push({...e,w,topic:t,i})));return a}
+function openEvidenceUrl(url,mime,name){
+  if(!url)return;
+  const isPdf=(mime==='application/pdf'||/\.pdf($|\?)/i.test(url)||/\.pdf$/i.test(name||''));
+  if(isPdf){
+    const a=document.createElement('a');
+    a.href=url;
+    a.target='_blank';
+    a.rel='noopener';
+    a.click();
+    return;
+  }
+  window.open(url,'_blank','noopener');
+}
+
+function renderEvidence(){const wf=evWeekFilter.value,tf=evTypeFilter.value;let a=allEvidence().filter(e=>(!wf||e.w===wf)&&(!tf||e.type===tf));evidenceList.innerHTML=a.map(e=>`<div class="ev-card">${e.url&&e.mime?.startsWith('image/')?`<a href="${esc(e.url)}" target="_blank"><img src="${esc(e.url)}"></a>`:''}<span class="badge">الأسبوع ${e.w}</span><h4>${esc(e.type)}</h4><div>${esc(e.title||e.name)}</div><div class="small">${esc(e.topic)}</div>${e.url?`<a href="${esc(e.url)}" target="_blank">👁️ فتح الشاهد</a>`:''}<div class="teacher-only"><button class="btn danger" onclick="deleteEvidence('${e.w}',${e.i})">🗑️ حذف الشاهد</button></div></div>`).join('')||'<p class="small">لا توجد شواهد مطابقة.</p>'}
 
 function initGroupWeek(){
  if(!window.groupWeek)return;

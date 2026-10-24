@@ -409,7 +409,7 @@ footer{margin-top:30px;text-align:center;color:#789;font-size:13px}
   </div>
 </div>
 
-<footer>ملف تفاعلي قابل للتصفح والحفظ محليًا على الجهاز — فيزياء 360°</footer>
+<footer>ملف تفاعلي — حفظ سحابي للسجلات عند دخول المعلمة، ونسخة محلية احتياطية — فيزياء 360°</footer>
 </main>
 
 
@@ -466,7 +466,7 @@ fbAuth.onAuthStateChanged(async user=>{
     alert('هذا الحساب غير مصرح له بإدارة فيزياء 360.');
     await fbAuth.signOut();
   }
-  if(teacherUser) await loadStudents();
+  if(teacherUser){ await loadStudents(); await loadWorkspace(); }
   else { liveStudents={}; buildStudents(); }
 });
 
@@ -723,44 +723,81 @@ const checklistItems=[
 'تم تحديد فرص الختم في الوحدات','تم جمع الشواهد أثناء التنفيذ','تم قياس الأثر وتوثيق النتائج','تم تكريم الطالبات في نهاية المبادرة'
 ];
 const chk=document.getElementById('checklist');
-const chkSaved=JSON.parse(localStorage.getItem('physics360_check')||'[]');
+const workspaceRef=fbDb.collection('initiativeData').doc('teacherWorkspace');
+const safeRead=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key)||'null')??fallback;}catch(e){return fallback;}};
+let workspaceLoaded=false;
+const localCheck=safeRead('physics360_check',[]);
 checklistItems.forEach((t,i)=>{
   const div=document.createElement('label');div.className='check-item';
-  div.innerHTML=`<input type="checkbox" ${chkSaved[i]?'checked':''}><span>${t}</span>`;
+  div.innerHTML=`<input type="checkbox" ${localCheck[i]?'checked':''}><span>${t}</span>`;
   chk.appendChild(div);
 });
-function saveChecklist(){
-  localStorage.setItem('physics360_check',JSON.stringify([...chk.querySelectorAll('input')].map(x=>x.checked)));
-  alert('تم حفظ قائمة التحقق ✅');
+function collectChecklist(){return [...chk.querySelectorAll('input')].map(x=>x.checked);}
+async function saveChecklist(){
+  const data=collectChecklist();
+  localStorage.setItem('physics360_check',JSON.stringify(data));
+  await saveWorkspaceField('checklist',data,'قائمة التحقق');
 }
-
 function evidenceRow(d={}){
   const tr=document.createElement('tr');
-  tr.innerHTML=`<td><input type="date" value="${d.date||''}"></td>
-  <td><input value="${d.lesson||''}" placeholder="الدرس/النشاط"></td>
+  tr.innerHTML=`<td><input type="date"></td>
+  <td><input placeholder="الدرس/النشاط"></td>
   <td><select><option>أتعلمها</option><option>أراها</option><option>أطبقها</option><option>أبتكرها</option></select></td>
-  <td><input value="${d.type||''}" placeholder="صورة / عمل / نتيجة..."></td>
-  <td><input value="${d.notes||''}" placeholder="ملاحظات"></td>`;
+  <td><input placeholder="صورة / عمل / نتيجة..."></td>
+  <td><input placeholder="ملاحظات"></td>`;
+  const x=tr.querySelectorAll('input');
+  x[0].value=d.date||'';x[1].value=d.lesson||'';x[2].value=d.type||'';x[3].value=d.notes||'';
   tr.querySelector('select').value=d.station||'أتعلمها';
   document.querySelector('#evidenceTable tbody').appendChild(tr);
 }
+function renderEvidence(data){
+  document.querySelector('#evidenceTable tbody').replaceChildren();
+  (data&&data.length?data:[{},{},{},{},{}]).forEach(evidenceRow);
+}
 function addEvidence(){evidenceRow();}
-function saveEvidence(){
-  const data=[...document.querySelectorAll('#evidenceTable tbody tr')].map(tr=>{
-    const x=tr.querySelectorAll('input'), s=tr.querySelector('select');
+function collectEvidence(){
+  return [...document.querySelectorAll('#evidenceTable tbody tr')].map(tr=>{
+    const x=tr.querySelectorAll('input'),s=tr.querySelector('select');
     return {date:x[0].value,lesson:x[1].value,station:s.value,type:x[2].value,notes:x[3].value};
   });
-  localStorage.setItem('physics360_evidence',JSON.stringify(data));alert('تم حفظ سجل الشواهد ✅');
 }
-(JSON.parse(localStorage.getItem('physics360_evidence')||'[]').length?JSON.parse(localStorage.getItem('physics360_evidence')):[{}, {}, {}, {}, {}]).forEach(evidenceRow);
-
-function saveResults(){
-  const ids=['participation','improvement','highest','impact'];
-  localStorage.setItem('physics360_results',JSON.stringify(Object.fromEntries(ids.map(id=>[id,document.getElementById(id).value]))));
-  alert('تم حفظ النتائج ✅');
+async function saveEvidence(){
+  const data=collectEvidence();
+  localStorage.setItem('physics360_evidence',JSON.stringify(data));
+  await saveWorkspaceField('evidence',data,'سجل الشواهد');
 }
-const rs=JSON.parse(localStorage.getItem('physics360_results')||'{}');
-Object.entries(rs).forEach(([k,v])=>{if(document.getElementById(k))document.getElementById(k).value=v;});
+const resultIds=['participation','improvement','highest','impact'];
+function collectResults(){return Object.fromEntries(resultIds.map(id=>[id,document.getElementById(id).value]));}
+function renderResults(data){resultIds.forEach(id=>document.getElementById(id).value=data?.[id]||'');}
+async function saveResults(){
+  const data=collectResults();
+  localStorage.setItem('physics360_results',JSON.stringify(data));
+  await saveWorkspaceField('results',data,'النتائج');
+}
+async function saveWorkspaceField(field,data,label){
+  if(!teacherUser){alert('حُفظت نسخة على هذا الجهاز فقط. سجلي دخول المعلمة للحفظ السحابي.');return;}
+  if(!workspaceLoaded){alert('لم تُحمّل البيانات السحابية بعد. أعيدي فتح الصفحة وتحققي من الاتصال قبل الحفظ.');return;}
+  try{
+    await workspaceRef.set({[field]:data,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+    alert('تم حفظ '+label+' سحابيًا بنجاح ✅');
+  }catch(err){console.error(err);alert('تعذر الحفظ السحابي. بقيت نسخة محلية على هذا الجهاز.');}
+}
+async function loadWorkspace(){
+  workspaceLoaded=false;
+  try{
+    const doc=await workspaceRef.get();
+    const data=doc.exists?doc.data():{};
+    // لا تُستبدل البيانات السحابية تلقائيًا ببيانات الجهاز المحلي.
+    if(Object.prototype.hasOwnProperty.call(data,'evidence'))renderEvidence(data.evidence);
+    if(Object.prototype.hasOwnProperty.call(data,'results'))renderResults(data.results);
+    if(Array.isArray(data.checklist)){
+      [...chk.querySelectorAll('input')].forEach((x,i)=>x.checked=!!data.checklist[i]);
+    }
+    workspaceLoaded=true;
+  }catch(err){console.error(err);alert('تعذر تحميل السجلات السحابية. لن تُستبدل البيانات الموجودة.');}
+}
+renderEvidence(safeRead('physics360_evidence',[]));
+renderResults(safeRead('physics360_results',{}));
 </script>
 </body>
 </html>
